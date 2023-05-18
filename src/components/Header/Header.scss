@@ -1,0 +1,6 @@
+.component__header {
+  height: calc(60px + constant(safe-area-inset-top));
+  height: calc(60px + env(safe-area-inset-top));
+  max-height: calc(60px + constant(safe-area-inset-top));
+  max-height: calc(60px + env(safe-area-inset-top));
+}

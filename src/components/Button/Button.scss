@@ -1,0 +1,53 @@
+.btn-primary {
+  @apply bg-primary-base hover:bg-primary-lighter text-white text-sm;
+  .btn-spinner {
+    @apply border-white;
+  }
+  &.disabled {
+    @apply bg-neutral-20 hover:bg-neutral-20 text-white;
+  }
+}
+
+.btn-secondary {
+  @apply bg-secondary hover:bg-black-light text-white;
+  .btn-spinner {
+    @apply border-white;
+  }
+  &.disabled {
+    @apply bg-neutral-20 hover:bg-neutral-20 text-white;
+  }
+}
+
+.btn-tertiary {
+  @apply bg-yellow hover:bg-yellow text-white text-xs;
+  .btn-spinner {
+    @apply border-white;
+  }
+  &.disabled {
+    @apply bg-neutral-20 hover:bg-neutral-20 text-white;
+  }
+}
+
+.btn-outline {
+  @apply bg-white border hover:bg-secondary hover:text-white;
+  .btn-spinner {
+    @apply border-secondary;
+  }
+  &.disabled {
+    @apply hover:bg-white text-neutral-20 hover:text-neutral-20;
+  }
+}
+
+.btn-sm {
+  @apply h-[2.5rem] text-sm;
+  .btn-spinner {
+    @apply w-5 h-5;
+  }
+}
+
+.btn-xs {
+  @apply h-[2rem] text-xs;
+  .btn-spinner {
+    @apply w-4 h-4;
+  }
+}

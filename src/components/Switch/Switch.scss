@@ -1,0 +1,17 @@
+.slider:before {
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.toggle-checkbox:checked + .slider {
+  background-color: rgba(0, 183, 203, 0.2);
+  background-color: theme('colors.primary.base');
+}
+
+.toggle-checkbox:checked + .slider:before {
+  -webkit-transform: translateX(15px);
+  -ms-transform: translateX(15px);
+  transform: translateX(15px);
+  background-color: theme('colors.white');
+  outline: solid 1px black;
+}
