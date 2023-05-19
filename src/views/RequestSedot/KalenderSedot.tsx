@@ -1,4 +1,4 @@
-import { Header, KalenderPicker } from 'components'
+import { CardSedotSchedule, Header, KalenderPicker } from 'components'
 import { format } from 'date-fns'
 import { id } from 'date-fns/locale'
 import React, { useState } from 'react'
@@ -21,11 +21,14 @@ export const KalenderSedot: React.FC = () => {
 
       <KalenderPicker onChangeSelected={(e) => setSelectedDay(e)} />
 
-      <div className='flex justify-between'>
+      <div className='flex justify-between mb-4'>
         <div className='text-primary-darker font-bold text-sm'>
           Jadwal {today}
         </div>
       </div>
+      <CardSedotSchedule />
+      <CardSedotSchedule className='my-4' />
+      <CardSedotSchedule className='my-4' />
     </div>
   )
 }

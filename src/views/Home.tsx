@@ -77,6 +77,8 @@ export const Home: React.FC = () => {
         Jadwal Sedot
       </div>
       <CardSedotSchedule />
+      <div className='mt-4' />
+      <CardSedotSchedule />
 
       <div className='flex justify-between mt-4'>
         <div className='text-primary-darker font-bold text-sm'>

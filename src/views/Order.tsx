@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { OrderCard } from 'components'
+import { CardSedotSchedule, NewOrder } from 'components'
 import React, { useState, useEffect } from 'react'
-import { ORDER_LIST } from 'utils/dumy'
+import { NEWORDER_LIST, ORDER_LIST, USER_REVIEW } from 'utils/dumy'
 
 export const Order: React.FC = () => {
   const [pendingOrderData, setPendingOrderData] = useState<any>()
@@ -26,34 +26,55 @@ export const Order: React.FC = () => {
   const handleCardClick = () => {}
 
   return (
-    <div
-      className={`bg-no-repeat bg-white bg-cover bg-center z-10 min-h-screen pb-24 top-0 left-0 w-full absolute bg-[url('/src/assets/images/ic_banner_order.png')] px-4 mt-[1rem]`}
-    >
-      <div className='font-bold text-center text-lg mb-4 mt-2'>Order</div>
-      <div className='flex flex-col gap-2'>
-        {pendingOrderData?.map((item: any, index: number) => (
-          <OrderCard
-            key={index}
-            type={item.type}
+    <div className='mb-4'>
+      <div className='bg-gradient-header h-40 -mt-[6rem] -mx-4 font-bold text-white pt-8 text-center text-xl'>
+        Order
+      </div>
+      <div className='bg-white shadow-xl -mt-16 p-4 rounded-xl mx-4'>
+        <div className='text-primary-darker font-bold'>
+          2 Orderan belum di konfirmasi
+        </div>
+        <div className='text-sm text-neutral-30'>
+          Segera konfirmasi orderan kamu, agar pelanggan tidak menunggu
+        </div>
+        {NEWORDER_LIST.slice(0, 2)?.map((item: any, index: number) => (
+          <NewOrder
             data={item}
-            onButtonClick={handleButtonClick}
-            onCardClick={handleCardClick}
+            className='my-6 !w-full !h-fit flex-none'
+            key={index}
           />
         ))}
       </div>
-      <div className='mt-6 mb-4 font-semi-bold text-sm text-primary-darker'>
-        {'Riwayat Order'}
+
+      <div className='text-primary-darker font-bold text-sm mt-8 mb-4'>
+        Riwayat Order
+      </div>
+      <CardSedotSchedule history />
+      <CardSedotSchedule history />
+
+      <div className='flex justify-between'>
+        <div className='text-primary-darker font-bold text-sm'>
+          Ulasan Pengguna
+        </div>
       </div>
 
-      <div className='flex flex-col gap-2'>
-        {historyOrderData?.map((item: any, index: number) => (
-          <OrderCard
+      <div className='-mx-4 scroll-x pb-8'>
+        {USER_REVIEW?.map((item: any, index: number) => (
+          <div
+            className='shadow-xl my-6 !w-4/5 !h-fit flex-none px-4 rounded-lg py-4'
             key={index}
-            type={item.type}
-            data={item}
-            onButtonClick={handleButtonClick}
-            onCardClick={handleCardClick}
-          />
+          >
+            <div className='flex justify-between items-center'>
+              <div className='text-primary-darker font-bold text-sm'>
+                {item.name}
+              </div>
+              <div className='text-xs text-neutral-20'>{item.time}</div>
+            </div>
+            <div className='justify-between flex items-center'>
+              <div className='line-clamp-2 mt-2'>{item.review_text}</div>
+              <img src={item.emoji} alt='' className='h-6' />
+            </div>
+          </div>
         ))}
       </div>
     </div>
