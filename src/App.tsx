@@ -14,7 +14,6 @@ import {
   PasswordReset,
   SplashScreen,
   RequestSedot,
-  DetailOrder,
   Register,
   RegisterTwo,
   Payment,
@@ -22,6 +21,7 @@ import {
   AddressList,
   AddAddress,
   PaymentConfirmed,
+  KalenderSedot,
 } from 'views'
 import { isLogin } from 'utils/auth'
 import { ModalAlert } from 'components'
@@ -77,7 +77,7 @@ const App: React.FC<Props> = ({ basename }) => {
               <Route path='/profile' />
             </Route>
             <Route path='/request-sedot' element={<RequestSedot />} />
-            <Route path='/detail-order' element={<DetailOrder />} />
+            <Route path='/sedot-schedule' element={<KalenderSedot />} />
             <Route path='/payment' element={<Payment />} />
             <Route path='/payment-waiting' element={<PaymentWaiting />} />
             <Route path='/payment-confirmed' element={<PaymentConfirmed />} />

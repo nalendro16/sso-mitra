@@ -1,6 +1,5 @@
 import clsx from 'clsx'
 import { Button } from './Button/Button'
-import images from 'assets/images'
 
 interface NewOrderProps {
   className?: string
@@ -16,9 +15,7 @@ export const NewOrder: React.FC<NewOrderProps> = ({ className, data }) => {
   return (
     <div
       className={clsx(
-        `outline-1 outline outline-neutral-10 rounded-lg h-36 px-4 py-3 ${
-          data?.isActive ? 'bg-neutral-10 !outline-neutral-20' : 'bg-white'
-        }`,
+        `outline-1 outline outline-neutral-10 rounded-lg h-36 px-4 py-3 shadow-md`,
         className
       )}
     >

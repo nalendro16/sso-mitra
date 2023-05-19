@@ -191,3 +191,19 @@ export const NEWORDER_LIST = [
     id: 2,
   },
 ]
+
+export const USER_REVIEW = [
+  {
+    name: 'Sarah Tesla',
+    review_text: 'Tukang sedot berpengalaman, hasil pekerjaan bagus',
+    emoji: images.ic_emoji,
+    time: '1 menit yang lalu',
+  },
+  {
+    name: 'Rahmat Adi',
+    review_text:
+      'Terimakasih tukang sedot berpengalaman, hasil pekerjaan bagus',
+    emoji: '',
+    time: 'Baru saja',
+  },
+]

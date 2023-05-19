@@ -68,6 +68,7 @@ import ic_inactive_paper from './ic_inactive_paper.png'
 import ic_active_paper from './ic_active_paper.png'
 import ic_notification_blue from './ic_notification_blue.png'
 import ic_home_panduanmitra from './ic_home_panduanmitra.png'
+import ic_emoji from './ic_emoji.png'
 
 const images = {
   ic_user,
@@ -140,6 +141,7 @@ const images = {
   ic_active_paper,
   ic_notification_blue,
   ic_home_panduanmitra,
+  ic_emoji,
 }
 
 export default images

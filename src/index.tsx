@@ -6,9 +6,7 @@ import 'styles/index.scss'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import * as setup from './setup'
-import 'swiper/css'
-import 'swiper/scss/pagination'
-import 'swiper/css/navigation'
+import 'react-day-picker/dist/style.css'
 
 // public url
 const { PUBLIC_URL } = process.env
