@@ -2,8 +2,9 @@ import clsx from 'clsx'
 import React from 'react'
 
 interface ModalProps {
-  dialogClassName?: string
-  contentClassName?: string
+  dialogClassName?: React.ComponentProps<'div'>['className']
+  contentClassName?: React.ComponentProps<'div'>['className']
+  showClassName?: React.ComponentProps<'div'>['className']
   show: boolean
   onHide?: () => void
 }
@@ -12,6 +13,7 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   dialogClassName,
   contentClassName,
+  showClassName,
   show,
   onHide,
 }) => {
@@ -24,7 +26,7 @@ export const Modal: React.FC<ModalProps> = ({
       <div
         className={`bg-secondary fixed top-0 left-0 z-[55] w-screen h-screen transition-opacity ease-linear duration-150 ${
           show ? 'opacity-50' : 'opacity-0 -z-[1] hidden'
-        }`}
+        } ${showClassName} `}
       />
       <div
         className={`fixed top-0 left-0 z-[60] w-full h-full transition-opacity ease-linear duration-150 ${

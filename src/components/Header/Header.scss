@@ -4,3 +4,12 @@
   max-height: calc(60px + constant(safe-area-inset-top));
   max-height: calc(60px + env(safe-area-inset-top));
 }
+
+.bg-grad-head {
+  background: rgb(120, 202, 249);
+  background: linear-gradient(
+    90deg,
+    rgba(120, 202, 249, 1) 0%,
+    rgba(48, 163, 221, 1) 100%
+  );
+}

@@ -45,7 +45,6 @@ export const Login: React.FC = () => {
         isConfirm: true,
       })
     }
-    console.log(dataOauth)
   }, [dataOauth])
 
   const handleChangeForm = (e: any) => {
@@ -70,7 +69,7 @@ export const Login: React.FC = () => {
         grant_type: 'password',
         client_id: clientID,
         client_secret: clientSecret,
-        scope: 'apps',
+        scope: 'mitra-apps',
         username: form.phone,
         password: form.password,
       })
@@ -128,16 +127,6 @@ export const Login: React.FC = () => {
           onClick={onSubmit}
           isLoading={dataOauth.isLoading}
         />
-
-        <div className='text-sm text-center'>
-          Belum punya akun?{' '}
-          <span
-            className='text-primary-base font-bold'
-            onClick={() => navigate('/register')}
-          >
-            Daftar sekarang
-          </span>
-        </div>
       </div>
     </div>
   )

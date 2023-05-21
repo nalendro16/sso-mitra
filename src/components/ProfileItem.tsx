@@ -2,6 +2,7 @@ import images from 'assets/images'
 import clsx from 'clsx'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AnimatedDiv } from './AnimatedDiv'
 
 interface ProfileItemProps {
   className?: string
@@ -21,7 +22,7 @@ export const ProfileItem: React.FC<ProfileItemProps> = ({
   onClick,
 }) => {
   return (
-    <div
+    <AnimatedDiv
       className={clsx(
         'bg-white flex items-center justify-between py-2',
         className
@@ -42,6 +43,6 @@ export const ProfileItem: React.FC<ProfileItemProps> = ({
         </div>
       </div>
       <img src={images.ic_stroke_right} alt='' className='mr-2' />
-    </div>
+    </AnimatedDiv>
   )
 }

@@ -14,10 +14,8 @@ import {
   PasswordReset,
   SplashScreen,
   RequestSedot,
-  Register,
-  RegisterTwo,
   Payment,
-  PaymentWaiting,
+  TrackOrder,
   AddressList,
   AddAddress,
   PaymentConfirmed,
@@ -31,7 +29,7 @@ type Props = {
 }
 
 const PrivateRoute = ({ wrapperContent = true }) => {
-  if (isLogin()) {
+  if (!isLogin()) {
     return <Navigate to='/' replace />
   }
   return wrapperContent ? (
@@ -64,23 +62,18 @@ const App: React.FC<Props> = ({ basename }) => {
           <Route path='/' element={<SplashScreen />} />
           <Route element={<ProtectedRoute wrapperContent={false} />}>
             <Route path='/login' element={<Login />} />
-            <Route path='/register' element={<Register />} />
-            <Route path='/register-two' element={<RegisterTwo />} />
             <Route path='/verify-otp' element={<VerifyOtp />} />
             <Route path='/password-reset' element={<PasswordReset />} />
           </Route>
           <Route element={<PrivateRoute />}>
-            <Route element={<HomeParent />}>
-              <Route path='/home' />
-              <Route path='/order' />
-              <Route path='/transaksi' />
-              <Route path='/profile' />
+            <Route path='/*' element={<HomeParent />}>
+              <Route path='*' element={<Outlet />} />
             </Route>
             <Route path='/request-sedot' element={<RequestSedot />} />
             <Route path='/sedot-schedule' element={<KalenderSedot />} />
             <Route path='/payment' element={<Payment />} />
-            <Route path='/payment-waiting' element={<PaymentWaiting />} />
             <Route path='/payment-confirmed' element={<PaymentConfirmed />} />
+            <Route path='/track-order' element={<TrackOrder />} />
             <Route path='/address-list' element={<AddressList />} />
             <Route path='/add-address' element={<AddAddress />} />
           </Route>

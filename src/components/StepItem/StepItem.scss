@@ -1,0 +1,100 @@
+.StepProgress {
+  position: relative;
+  padding-left: 45px;
+  list-style: none;
+  margin-bottom: 16px;
+
+  &::before {
+    display: inline-block;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 15px;
+    width: 10px;
+    height: 130%;
+    border-left: 2px dashed #ccc;
+
+    &:last-child {
+      height: 0 !important;
+    }
+  }
+
+  &-item {
+    position: relative;
+    counter-increment: list;
+
+    &:not(:last-child) {
+      padding-bottom: 20px;
+    }
+
+    &::before {
+      display: inline-block;
+      content: '';
+      position: absolute;
+      left: -30px;
+      height: 130%;
+      width: 1px;
+    }
+
+    &::after {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      top: -4px;
+      left: -47px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #eef5fc;
+    }
+
+    &.is-done {
+      &::before {
+        border-left: 2px dashed #229bd8;
+      }
+      &::after {
+        content: url('../../assets/images/ic_vector_check.png');
+        padding-top: 6px;
+        color: #fff;
+        width: 32px;
+        height: 32px;
+        top: -4px;
+        left: -46px;
+        text-align: center;
+        background: rgb(120, 202, 249);
+        background: linear-gradient(
+          90deg,
+          rgba(120, 202, 249, 1) 0%,
+          rgba(48, 163, 221, 1) 100%
+        );
+      }
+    }
+
+    &.current {
+      &::before {
+        border-left: 1px dashed #229bd8;
+      }
+
+      &::after {
+        padding-top: 1px;
+        width: 32px;
+        height: 32px;
+        top: -4px;
+        left: -46px;
+        font-size: 14px;
+        text-align: center;
+        color: green;
+        background: rgb(120, 202, 249);
+        background: linear-gradient(
+          90deg,
+          rgba(120, 202, 249, 1) 0%,
+          rgba(48, 163, 221, 1) 100%
+        );
+      }
+    }
+  }
+
+  strong {
+    display: block;
+  }
+}

@@ -10,6 +10,28 @@ module.exports = {
       dropShadow: {
         primary: '0 3px 12px rgba(255, 218, 0, 0.25)',
       },
+      keyframes: {
+        modalBodyAnim: {
+          '0%': {
+            transform: 'translateY(100px)',
+          },
+          '100%': {
+            transform: 'translateY(0px)',
+          },
+        },
+        alertAnim: {
+          '0%': {
+            transform: 'scale(0.7)',
+          },
+          '100%': {
+            transform: 'scale(1)',
+          },
+        },
+      },
+      animation: {
+        'ease-body': 'modalBodyAnim 0.8s ease 0s 1 normal forwards',
+        'open-alert': 'alertAnim 0.4s ease 0s 1 normal forwards',
+      },
     },
     colors: {
       transparent: 'transparent',

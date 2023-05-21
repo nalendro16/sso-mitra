@@ -1,36 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { CardSedotSchedule, NewOrder } from 'components'
-import React, { useState, useEffect } from 'react'
-import { NEWORDER_LIST, ORDER_LIST, USER_REVIEW } from 'utils/dumy'
+import { AnimatedDiv, CardSedotSchedule, NewOrder } from 'components'
+import { useNavigate } from 'react-router-dom'
+import { NEWORDER_LIST, USER_REVIEW } from 'utils/dumy'
 
 export const Order: React.FC = () => {
-  const [pendingOrderData, setPendingOrderData] = useState<any>()
-  const [historyOrderData, setHistoryOrderData] = useState<any>()
-
-  useEffect(() => {
-    let tmpPending: any = []
-    let tmpHistory: any = []
-    ORDER_LIST?.forEach((item: any) => {
-      if (item.need_paid) {
-        tmpPending.push({ ...item })
-        setPendingOrderData(tmpPending)
-      } else {
-        tmpHistory.push({ ...item })
-        setHistoryOrderData(tmpHistory)
-      }
-    })
-  }, [ORDER_LIST])
-
-  const handleButtonClick = () => {}
-
-  const handleCardClick = () => {}
-
+  const navigate = useNavigate()
   return (
     <div className='mb-4'>
       <div className='bg-gradient-header h-40 -mt-[6rem] -mx-4 font-bold text-white pt-8 text-center text-xl'>
         Order
       </div>
-      <div className='bg-white shadow-xl -mt-16 p-4 rounded-xl mx-4'>
+      <AnimatedDiv className='bg-white shadow-xl -mt-16 p-4 rounded-xl mx-4'>
         <div className='text-primary-darker font-bold'>
           2 Orderan belum di konfirmasi
         </div>
@@ -42,15 +22,19 @@ export const Order: React.FC = () => {
             data={item}
             className='my-6 !w-full !h-fit flex-none'
             key={index}
+            onCancelOrder={() => console.log('order canceled')}
+            onAcceptOrder={() => navigate('/payment-confirmed')}
           />
         ))}
-      </div>
+      </AnimatedDiv>
 
-      <div className='text-primary-darker font-bold text-sm mt-8 mb-4'>
-        Riwayat Order
-      </div>
-      <CardSedotSchedule history />
-      <CardSedotSchedule history />
+      <AnimatedDiv>
+        <div className='text-primary-darker font-bold text-sm mt-8 mb-4'>
+          Riwayat Order
+        </div>
+        <CardSedotSchedule history />
+        <CardSedotSchedule history />
+      </AnimatedDiv>
 
       <div className='flex justify-between'>
         <div className='text-primary-darker font-bold text-sm'>

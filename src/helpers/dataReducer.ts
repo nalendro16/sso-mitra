@@ -41,6 +41,8 @@ export const alertReducer = (state: any, action: any) => {
         isOpen: true,
         title: action.title,
         messages: action.messages,
+        images: action.images,
+        imagesClassName: action.imagesClassName,
         isConfirm: action.isConfirm ?? false,
         showFooter: action.showFooter ?? true,
         showBtnClose: action.showBtnClose ?? true,
@@ -62,4 +64,3 @@ export const alertReducer = (state: any, action: any) => {
       return state
   }
 }
-

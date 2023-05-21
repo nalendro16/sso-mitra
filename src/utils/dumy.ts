@@ -207,3 +207,36 @@ export const USER_REVIEW = [
     time: 'Baru saja',
   },
 ]
+
+export const PROGRESS_TRACK = [
+  {
+    title: 'Konfirmasi Pesanan',
+    description: 'Melakukan konfirmasi pesanan yang masuk',
+    status: 'done',
+  },
+  {
+    title: 'Survey lokasi',
+    description: 'Melakukan survei lokasi proyek',
+    status: 'done',
+  },
+  {
+    title: 'Verifikasi RAB',
+    description: 'Menentukan dan verifikasi RAB project',
+    status: 'progress',
+  },
+  {
+    title: 'Order selesai',
+    description: 'Ingatkan user untuk membagikan pengalaman mereka atas jasamu',
+    status: 'undone',
+  },
+  {
+    title: 'Order selesai',
+    description: 'Ingatkan user untuk membagikan pengalaman mereka atas jasamu',
+    status: 'undone',
+  },
+  {
+    title: 'Order selesai',
+    description: 'Ingatkan user untuk membagikan pengalaman mereka atas jasamu',
+    status: 'undone',
+  },
+]

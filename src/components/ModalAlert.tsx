@@ -18,21 +18,27 @@ export const ModalAlert: React.FC = () => {
   return (
     <Modal
       dialogClassName='p-8'
-      contentClassName='bg-white rounded-md p-4'
+      contentClassName='bg-white rounded-md p-4 animate-open-alert shadow-xl'
       show={alert.isOpen}
       onHide={() => closeAlert({ isConfirm: false })}
     >
       <div>
+        {alert.images && (
+          <div className='w-full flex justify-center'>
+            <img src={alert.images} alt='' className={alert.imagesClassName} />
+          </div>
+        )}
+
         {alert.title && (
-          <div className='font-semi-bold text-sm mb-2 text-center'>
+          <div className='font-bold mb-2 text-center text-primary-darker'>
             {alert.title}
           </div>
         )}
 
         <div className='my-2 text-center'>
-          <p className='!text-base'>
+          <div className='!text-base'>
             {renderMessageError(alert.messages, true, 'text-base')}
-          </p>
+          </div>
         </div>
 
         {alert.showFooter && (
@@ -53,7 +59,9 @@ export const ModalAlert: React.FC = () => {
             )}
             {alert.isConfirm && (
               <div
-                className='ml-3 px-2 bg-primary-base w-32 h-12 rounded-md grid place-items-center'
+                className={`ml-3 px-2 bg-primary-base w-32 h-12 rounded-md grid place-items-center ${
+                  !alert.showBtnClose && 'w-full max-w-content'
+                }`}
                 onClick={() => closeAlert({ isConfirm: true })}
               >
                 <p className='text-neutral-10 text-center text-sm'>

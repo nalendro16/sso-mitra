@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "286211378161",
+    "project_id": "sajang-19821",
+    "storage_bucket": "sajang-19821.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286211378161:android:46375a773173c709c7d250",
+        "android_client_info": {
+          "package_name": "com.sajang.customer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "286211378161-617jucns2cv9hr84c7rashsqngvj6g0d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADyG31X3ieMHkkOlZ8x00dPPeGEyjFkeQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "286211378161-617jucns2cv9hr84c7rashsqngvj6g0d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286211378161:android:51b8f9d56c8f4e15c7d250",
+        "android_client_info": {
+          "package_name": "com.sajang.mitra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "286211378161-617jucns2cv9hr84c7rashsqngvj6g0d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADyG31X3ieMHkkOlZ8x00dPPeGEyjFkeQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "286211378161-617jucns2cv9hr84c7rashsqngvj6g0d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

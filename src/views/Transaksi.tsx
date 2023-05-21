@@ -1,5 +1,5 @@
 import images from 'assets/images'
-import { HistoryTransactionCard } from 'components'
+import { AnimatedDiv, HistoryTransactionCard } from 'components'
 import React, { useState } from 'react'
 
 export const Transaksi: React.FC = () => {
@@ -20,11 +20,11 @@ export const Transaksi: React.FC = () => {
           />
         </div>
       </div>
-      <div className='mt-4'>
+      <AnimatedDiv className='mt-4'>
         <HistoryTransactionCard />
         <HistoryTransactionCard />
         <HistoryTransactionCard />
-      </div>
+      </AnimatedDiv>
     </div>
   )
 }

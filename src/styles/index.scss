@@ -117,18 +117,6 @@ body {
   box-shadow: 0px -3px 6px -1px rgba(0, 0, 0, 0.15);
 }
 
-.swiper-pagination {
-  position: relative !important;
-  display: flex !important;
-  gap: -12px !important;
-}
-
-// .swiper-pagination-bullet-active {
-//   background-color: theme('colors.primary.base') !important;
-//   width: 30px !important;
-//   height: 5px !important;
-// }
-
 .bg-gradient-header {
   background: rgb(35, 155, 216);
   background: linear-gradient(
@@ -138,10 +126,58 @@ body {
   );
 }
 
+.bg-grad-head {
+  background: rgb(120, 202, 249);
+  background: linear-gradient(
+    90deg,
+    rgba(120, 202, 249, 1) 0%,
+    rgba(48, 163, 221, 1) 100%
+  );
+}
+
 .entrance-page {
   -webkit-animation: entrancefromright 0.3s;
   animation: entrancefromright 0.3s;
   animation-iteration-count: 1;
   -webkit-animation-iteration-count: 1;
   position: relative;
+}
+
+.bg-splashscreen {
+  height: 100vh;
+  background-color: #f5f7fd;
+  position: absolute;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.animate-ease-top {
+  animation: myAnim1 1s ease 0s 1 normal forwards;
+}
+
+.animate-ease-btm {
+  animation: myAnim2 1s ease 0s 1 normal forwards;
+}
+
+@keyframes myAnim1 {
+  0% {
+    transform: translateY(-200px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes myAnim {
+  0% {
+    transform: translateY(0);
+    background: #000;
+  }
+
+  100% {
+    background: #fff;
+    transform: translateY(-200px);
+  }
 }

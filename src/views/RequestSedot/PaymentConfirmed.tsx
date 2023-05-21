@@ -15,7 +15,7 @@ export const PaymentConfirmed: React.FC = () => {
         className='w-64 h-32 mx-auto my-4'
       />
       <div className='text-xl text-center text-white font-semi-bold my-4'>
-        Pembayaran Terkonfirmasi
+        Pesanan Terkonfirmasi
       </div>
       <p className='mb-4 text-sm text-center text-white'>
         Hore, order kamu berhasil dikonfirmasi. Selanjutnya, silahkan menunggu
@@ -33,8 +33,8 @@ export const PaymentConfirmed: React.FC = () => {
       </div>
 
       <Button
-        onClick={() => console.log('Ringkasan Order')}
-        label='Ringkasan Order'
+        onClick={() => navigate('/track-order')}
+        label='Track Order'
         className='bg-primary-base text-white w-full outline outline-white outline-1 mt-8 mb-4'
       />
       <Button
