@@ -1,18 +1,22 @@
 import clsx from 'clsx'
 import { Button } from './Button/Button'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Modal } from 'components'
 import images from 'assets/images'
 import { useGlobalContext } from 'hooks/context'
+import { useGet } from 'hooks/useRequest'
+import { API } from 'config/api'
+import Skeleton from 'react-loading-skeleton'
 
 interface NewOrderProps {
   className?: string
   data: {
-    title: string
     address: string
-    isActive: boolean
-    id: number
+    id_transaction: number
+    name: string
+    postal_code: string
   }
+  isLoading?: boolean
   onCancelOrder: () => void
   onAcceptOrder: () => void
 }
@@ -20,15 +24,32 @@ interface NewOrderProps {
 export const NewOrder: React.FC<NewOrderProps> = ({
   className,
   data,
+  isLoading,
   onCancelOrder,
   onAcceptOrder,
 }) => {
   const { openAlert } = useGlobalContext()
-  // const [dataModal, setDataModal] = useState<any>()
+  const [dataNewOrderDetail, getDataNewOrderDetail] = useGet({
+    isLoading: false,
+  })
+  const [dataDetail, setDetail] = useState<any>()
   const [isShowModal, setShowModal] = useState<boolean>(false)
+
+  useEffect(() => {
+    const { data } = dataNewOrderDetail
+    if (data?.status === 'success') {
+      setDetail(data?.result)
+    } else if (data?.status === 'fail') {
+      setDetail(null)
+    }
+  }, [dataNewOrderDetail])
 
   const handleOpenModal = () => {
     setShowModal(true)
+    console.log(data?.id_transaction)
+    getDataNewOrderDetail.getRequest(
+      API.NEW_ORDER_DETAIL + `${data.id_transaction}`
+    )
   }
 
   return (
@@ -38,10 +59,10 @@ export const NewOrder: React.FC<NewOrderProps> = ({
         className
       )}
     >
-      <div className='!font-bold text-sm text-primary-darker'>
-        {data?.title}
+      <div className='!font-bold text-sm text-primary-darker'>{data?.name}</div>
+      <div className='line-clamp-3 mt-2 mb-4'>
+        {data?.address}, {data?.postal_code}
       </div>
-      <div className='line-clamp-3 mt-2 mb-4'>{data?.address}</div>
       <div className='flex justify-between mb-2 gap-2'>
         <Button
           onClick={handleOpenModal}
@@ -49,6 +70,7 @@ export const NewOrder: React.FC<NewOrderProps> = ({
           className='btn-primary w-full'
         />
       </div>
+
       <Modal
         show={isShowModal}
         onHide={() => setShowModal(false)}
@@ -64,26 +86,63 @@ export const NewOrder: React.FC<NewOrderProps> = ({
         </div>
 
         <div className='flex justify-between text-primary-darker font-bold text-sm'>
-          <div>Samsul Bahri</div>
-          <div>21 Juni 2023</div>
+          {dataNewOrderDetail?.isLoading ? (
+            <Skeleton width={120} />
+          ) : (
+            <div>{dataDetail?.order_by}</div>
+          )}
+          {dataNewOrderDetail?.isLoading ? (
+            <Skeleton width={120} />
+          ) : (
+            <div>{dataDetail?.order_time_formatted}</div>
+          )}
         </div>
 
         <div className='w-full flex justify-center'>
           <div className='flex flex-col justify-center w-fit my-4 items-center'>
-            <div>
-              {'Layanan sedot '}
-              <span className='text-primary-darker font-bold'>{'Rumah'}</span>
-            </div>
-            <div className='relative text-center my-4'>
-              <img src={images.ic_calender_order} alt='' />
-              <div className='font-bold text-3xl absolute top-8 left-6'>13</div>
-            </div>
-            <div className='!font-bold text-xl text-primary-darker'>
-              Januari 2023 10.00 WIB
-            </div>
-            <div className='text-neutral-20 text-sm line-clamp-2 w-3/4 text-center mb-4'>
-              Jl. Gajah Mada No. 18, Genteng, Banyuwangi 68465
-            </div>
+            {dataNewOrderDetail?.isLoading ? (
+              <Skeleton width={180} height={20} />
+            ) : (
+              <div>
+                {'Layanan sedot '}
+                <span className='text-primary-darker font-bold'>
+                  {dataDetail?.name}
+                </span>
+              </div>
+            )}
+
+            {dataNewOrderDetail?.isLoading ? (
+              <Skeleton width={60} height={60} className='my-4' />
+            ) : (
+              <div className='relative text-center my-4'>
+                <img src={images.ic_calender_order} alt='' />
+
+                <div className='font-bold text-3xl absolute top-8 left-6'>
+                  {dataDetail?.date_sedot_formatted}
+                </div>
+              </div>
+            )}
+
+            {dataNewOrderDetail?.isLoading ? (
+              <Skeleton width={120} height={20} className='my-4' />
+            ) : (
+              <div className='!font-bold text-xl text-primary-darker'>
+                {dataDetail?.time_sedot_formatted}
+              </div>
+            )}
+
+            {dataNewOrderDetail?.isLoading ? (
+              <Skeleton width={120} height={20} />
+            ) : (
+              <div className='text-neutral-20 text-sm line-clamp-2 w-3/4 text-center mb-4'>
+                {`${dataDetail?.address ? `${dataDetail?.address},` : ''} ${
+                  dataDetail?.subdistrict ? `${dataDetail?.subdistrict},` : ''
+                } ${dataDetail?.district ? `${dataDetail?.district},` : ''} ${
+                  dataDetail?.city ? `${dataDetail?.city},` : ''
+                } ${dataDetail?.province ? `${dataDetail?.province},` : ''}`}
+                {dataDetail?.postal_code ? dataDetail?.postal_code : ''}
+              </div>
+            )}
           </div>
         </div>
 
@@ -107,12 +166,14 @@ export const NewOrder: React.FC<NewOrderProps> = ({
                 },
               })
             }
+            isLoading={isLoading}
             label='Tolak'
           />
           <Button
             className='btn-primary w-full basis-1/2'
             onClick={onAcceptOrder}
             label='Terima'
+            isLoading={isLoading}
           />
         </div>
       </Modal>

@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import {
   BrowserRouter,
   Navigate,
@@ -20,9 +20,12 @@ import {
   AddAddress,
   PaymentConfirmed,
   KalenderSedot,
+  HomeWithdraw,
 } from 'views'
 import { isLogin } from 'utils/auth'
 import { ModalAlert } from 'components'
+import { App as AppCap } from '@capacitor/app'
+import { useGlobalContext } from 'hooks/context'
 
 type Props = {
   basename: string
@@ -55,6 +58,28 @@ const ProtectedRoute = ({ wrapperContent = true }) => {
 }
 
 const App: React.FC<Props> = ({ basename }) => {
+  const { openAlert } = useGlobalContext()
+
+  useEffect(() => {
+    AppCap.addListener('backButton', ({ canGoBack }) => {
+      if (canGoBack) {
+        window.history.back()
+      } else {
+        openAlert({
+          messages: 'Tutup Aplikasi Sajang?',
+          isConfirm: true,
+          btnConfirmText: 'Ya',
+          btnCloseText: 'Tidak',
+          callback: (e: any) => {
+            if (e.isConfirm) {
+              AppCap.exitApp()
+            }
+          },
+        })
+      }
+    })
+  }, [])
+
   return (
     <Suspense fallback={() => 'loading ....'}>
       <BrowserRouter basename={basename}>
@@ -76,6 +101,7 @@ const App: React.FC<Props> = ({ basename }) => {
             <Route path='/track-order' element={<TrackOrder />} />
             <Route path='/address-list' element={<AddressList />} />
             <Route path='/add-address' element={<AddAddress />} />
+            <Route path='/withdraw-home' element={<HomeWithdraw />} />
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route path='/component' element={<Component />} />

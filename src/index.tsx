@@ -7,6 +7,7 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 import * as setup from './setup'
 import 'react-day-picker/dist/style.css'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 // public url
 const { PUBLIC_URL } = process.env

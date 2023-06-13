@@ -1,9 +1,11 @@
 import images from 'assets/images'
 import { Button } from 'components'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 export const PaymentConfirmed: React.FC = () => {
   const navigate = useNavigate()
+  const { state } = useLocation() as any
+  console.log(state)
   return (
     <div className='h-full w-full absolute top-0 left-0 bg-gradient-header flex flex-col px-4 pt-16 pb-8'>
       <div className='text-lg text-center text-white font-semi-bold my-4'>
@@ -28,8 +30,8 @@ export const PaymentConfirmed: React.FC = () => {
       </div>
 
       <div className='flex justify-between text-white text-sm'>
-        <div>#4504Df0</div>
-        <div>21 Juni 2023</div>
+        <div>{state?.invoice_id}</div>
+        <div>{state?.time}</div>
       </div>
 
       <Button
