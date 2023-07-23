@@ -163,19 +163,26 @@ export const Home: React.FC = () => {
           Jadwal Sedot
         </div>
         {dataConfirmedOrder.isLoading ? (
-          Array.from({ length: 2 }, (index: number) => (
-            <div
-              className='my-6 !h-fit flex-none outline-1 outline outline-neutral-10 rounded-lg px-4 py-3 shadow-md'
-              key={index}
-            >
-              <Skeleton width={80} height={20} />
-              <Skeleton width={250} height={20} className='my-2' />
-              <Skeleton width={200} height={30} />
-            </div>
-          ))
+          Array.from([1, 2, 3, 4, 5]).map((item: any) => {
+            return (
+              <div
+                className='my-6 !h-fit flex-none outline-1 outline outline-neutral-10 rounded-lg px-4 py-3 shadow-md'
+                key={item}
+              >
+                <Skeleton width={80} height={20} />
+                <Skeleton width={250} height={20} className='my-2' />
+                <Skeleton width={200} height={30} />
+              </div>
+            )
+          })
         ) : dataConfirmed?.length !== 0 ? (
-          dataConfirmed?.map((item: any, index: number) => (
-            <CardSedotSchedule data={item} key={index} className='my-4' />
+          dataConfirmed?.map((item: any) => (
+            <CardSedotSchedule
+              data={item}
+              key={item?.id_transaction}
+              className='my-4 '
+              onClick={() => navigate(`/track-order/${item?.id_transaction}`)}
+            />
           ))
         ) : (
           <div className='flex justify-center w-full my-12 font-semi-bold text-neutral-20'>
@@ -192,22 +199,24 @@ export const Home: React.FC = () => {
 
         <div className='-mx-4 scroll-x pb-4'>
           {dataGetNewOrder?.isLoading ? (
-            Array.from({ length: 3 }, (index: number) => (
-              <div
-                className='my-6 !w-4/5 !h-fit flex-none outline-1 outline outline-neutral-10 rounded-lg px-4 py-3 shadow-md'
-                key={index}
-              >
-                <Skeleton width={80} height={20} />
-                <Skeleton width={250} height={20} className='my-2' />
-                <Skeleton width={200} height={30} />
-              </div>
-            ))
+            Array.from([1, 2]).map((item: any) => {
+              return (
+                <div
+                  className='my-6 !w-4/5 !h-fit flex-none outline-1 outline outline-neutral-10 rounded-lg px-4 py-3 shadow-md'
+                  key={item}
+                >
+                  <Skeleton width={80} height={20} />
+                  <Skeleton width={250} height={20} className='my-2' />
+                  <Skeleton width={200} height={30} />
+                </div>
+              )
+            })
           ) : dataNewOrder?.length !== 0 ? (
             dataNewOrder?.map((item: any, index: number) => (
               <NewOrder
                 data={item}
                 className='my-6 !w-4/5 !h-fit flex-none'
-                key={index}
+                key={item.id_transaction}
                 isLoading={dataAcceptOrder.isLoading}
                 onCancelOrder={() => console.log('order canceled')}
                 onAcceptOrder={() => handleAcceptOrder(item.id_transaction)}

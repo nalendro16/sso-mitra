@@ -71,6 +71,8 @@ import ic_home_panduanmitra from './ic_home_panduanmitra.png'
 import ic_emoji from './ic_emoji.png'
 import ic_calender_order from './ic_calender_order.png'
 import ic_reject_order from './ic_reject_order.png'
+import ic_checked_green from './ic_checked_green.png'
+import ic_right_blue from './ic_right_blue.png'
 
 const images = {
   ic_user,
@@ -146,6 +148,8 @@ const images = {
   ic_emoji,
   ic_calender_order,
   ic_reject_order,
+  ic_checked_green,
+  ic_right_blue,
 }
 
 export default images

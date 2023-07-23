@@ -20,11 +20,7 @@ export const SplashScreen: React.FC = () => {
     if (data?.status === 'success') {
       setSplashImg(data?.result.splash_screen_url)
       setTimeout(() => {
-        // if (installed) { //use this when intro screen ready
-        //   navigate(`/login`, { replace: true })
-        // } else {
         navigate(`/login`)
-        // }
       }, Number(data?.result?.splash_screen_duration) * 1000)
     }
   }, [dataSplash])

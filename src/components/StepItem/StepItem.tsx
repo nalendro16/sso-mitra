@@ -2,14 +2,20 @@ import './StepItem.scss'
 
 interface StepItemProps {
   data: {
-    title: string
+    name: string
     description: string
     status: string
+    step: number
   }
   className?: string
+  onLastStep: () => void
 }
 
-export const StepItem: React.FC<StepItemProps> = ({ data, className }) => {
+export const StepItem: React.FC<StepItemProps> = ({
+  data,
+  className,
+  onLastStep,
+}) => {
   const handleStatus = (e: any) => {
     switch (e) {
       case 'done':
@@ -23,9 +29,12 @@ export const StepItem: React.FC<StepItemProps> = ({ data, className }) => {
 
   return (
     <div>
-      <ul className='StepProgress'>
+      <ul
+        className='StepProgress'
+        onClick={() => (data.step === 4 ? onLastStep() : void 0)}
+      >
         <li className={`StepProgress-item ${handleStatus(data?.status)}`}>
-          <strong className='text-primary-darker mb-1'>{data?.title}</strong>
+          <strong className='text-primary-darker mb-1'>{data?.name}</strong>
           <p className='text-xs'>{data?.description}</p>
         </li>
       </ul>

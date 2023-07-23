@@ -3,7 +3,7 @@ import images from 'assets/images'
 import React, { useEffect, useState } from 'react'
 import { Button, Input } from 'components'
 import { useNavigate } from 'react-router-dom'
-import { usePost } from 'hooks/useRequest'
+import { useGet, usePost } from 'hooks/useRequest'
 import { API } from 'config/api'
 import { clientID, clientSecret } from 'config/app'
 import { InputPIN } from 'components/InputPin'
@@ -16,6 +16,7 @@ export const Login: React.FC = () => {
   const navigate = useNavigate()
   const { openAlert } = useGlobalContext()
   const [dataOauth, getDataOauth] = usePost({ isLoading: false })
+  const [dataDetailLogin, getDetailLogin] = useGet({ isLoading: false })
   const [form, setForm] = useState({
     phone: '',
     password: '',
@@ -36,7 +37,9 @@ export const Login: React.FC = () => {
       } else if (dataOauth.data?.access_token) {
         storage.setItem(StorageKey.ACCESS_TOKEN, dataOauth.data)
         storage.setItem(StorageKey.IS_LOGIN, true)
-        navigate('/home', { replace: true })
+        setTimeout(() => {
+          getDetailLogin.getRequest(API.DETAIL_LOGIN)
+        }, 300)
       }
     } else {
       openAlert({
@@ -46,6 +49,13 @@ export const Login: React.FC = () => {
       })
     }
   }, [dataOauth])
+
+  useEffect(() => {
+    const { data } = dataDetailLogin
+    if (data?.status === 'success') {
+      navigate('/home', { replace: true })
+    }
+  }, [dataDetailLogin])
 
   const handleChangeForm = (e: any) => {
     const { value, name } = e

@@ -35,7 +35,7 @@ export const PaymentConfirmed: React.FC = () => {
       </div>
 
       <Button
-        onClick={() => navigate('/track-order')}
+        onClick={() => navigate(`/track-order/${state?.id_transaction}`)}
         label='Track Order'
         className='bg-primary-base text-white w-full outline outline-white outline-1 mt-8 mb-4'
       />

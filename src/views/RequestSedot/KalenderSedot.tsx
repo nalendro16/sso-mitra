@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   AnimatedDiv,
   CardSedotSchedule,
@@ -81,29 +82,32 @@ export const KalenderSedot: React.FC = () => {
         </div>
 
         {dataSelectedDate.isLoading ? (
-          Array.from({ length: 2 }, (index: number) => (
-            <div
-              className='my-6 !h-fit flex-none outline-1 outline outline-neutral-10 rounded-lg px-4 py-3 shadow-md'
-              key={index}
-            >
-              <Skeleton width={80} height={20} />
-              <Skeleton width={250} height={20} className='my-2' />
-              <Skeleton width={200} height={30} />
-            </div>
-          ))
+          Array.from([1, 2, 3, 4, 5]).map((item: any) => {
+            return (
+              <div
+                className='my-6 !h-fit flex-none outline-1 outline outline-neutral-10 rounded-lg px-4 py-3 shadow-md'
+                key={item}
+              >
+                <Skeleton width={80} height={20} />
+                <Skeleton width={250} height={20} className='my-2' />
+                <Skeleton width={200} height={30} />
+              </div>
+            )
+          })
         ) : dataPerDay?.length !== 0 ? (
           dataPerDay?.map((item: any, index: number) => (
-            <CardSedotSchedule data={item} key={index} className='my-4' />
+            <CardSedotSchedule
+              data={item}
+              key={index}
+              className='my-4'
+              onClick={() => navigate(`/track-order/${item?.id_transaction}`)}
+            />
           ))
         ) : (
           <div className='flex justify-center w-full my-12 font-semi-bold text-neutral-20'>
             <div>Belum Ada Order</div>
           </div>
         )}
-
-        {/* <CardSedotSchedule />
-        <CardSedotSchedule className='my-4' />
-        <CardSedotSchedule className='my-4' /> */}
       </AnimatedDiv>
     </div>
   )
