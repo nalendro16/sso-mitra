@@ -13,7 +13,7 @@ import { MENU_PROFILE } from 'utils/dumy'
 export const Profile: React.FC = () => {
   const storage = new LocalStorage()
   const navigate = useNavigate()
-  const { openAlert } = useGlobalContext()
+  const { openAlert, setLevelMitra } = useGlobalContext()
   const [logout, postLogout] = usePost({ isLoading: false })
   const [upperMenu, setUpperMenu] = useState<any>()
   const [bottomMenu, setBottomMenu] = useState<any>()
@@ -63,9 +63,8 @@ export const Profile: React.FC = () => {
       isConfirm: true,
       callback: (e: any) => {
         if (e.isConfirm) {
-          // postLogout.getRequest(API.LOGOUT, { device_id: deviceID })
-          storage.remove(StorageKey.ACCESS_TOKEN)
-          storage.remove(StorageKey.IS_LOGIN)
+          storage.clear()
+          setLevelMitra('')
           navigate('/', { replace: true })
         }
       },

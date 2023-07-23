@@ -10,7 +10,7 @@ import Skeleton from 'react-loading-skeleton'
 import { useGlobalContext } from 'hooks/context'
 
 export const Home: React.FC = () => {
-  const { openAlert } = useGlobalContext()
+  const { openAlert, levelMitra } = useGlobalContext()
   const [dataGetSummaryHome, getSummaryHome] = useGet({ isLoading: false })
   const [dataAcceptOrder, postAcceptOrder] = usePost({ isLoading: false })
   const [dataConfirmedOrder, getConfirmedOrder] = useGet({ isLoading: false })
@@ -19,6 +19,7 @@ export const Home: React.FC = () => {
   const [dataNewOrder, setDataNewOrder] = useState<any>([])
   const [dataConfirmed, setDataConfirmed] = useState<any>([])
 
+  console.log(levelMitra)
   useEffect(() => {
     const { data } = dataGetSummaryHome
     if (data?.status === 'success') {
@@ -42,6 +43,10 @@ export const Home: React.FC = () => {
     if (data?.status === 'success') {
       setDataConfirmed(data?.result)
     } else if (data?.status === 'fail') {
+      setDataConfirmed(null)
+    }
+
+    return () => {
       setDataConfirmed(null)
     }
   }, [dataConfirmedOrder])

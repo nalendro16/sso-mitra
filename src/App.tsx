@@ -22,6 +22,9 @@ import {
   KalenderSedot,
   HomeWithdraw,
   AddAccountBank,
+  DetailKontruksiLayanan,
+  DetailKontruksiOrder,
+  RancanganAnggaranBiaya,
 } from 'views'
 import { isLogin } from 'utils/auth'
 import { ModalAlert } from 'components'
@@ -105,6 +108,18 @@ const App: React.FC<Props> = ({ basename }) => {
             <Route path='/add-address' element={<AddAddress />} />
             <Route path='/withdraw-home' element={<HomeWithdraw />} />
             <Route path='/add-bank-account' element={<AddAccountBank />} />
+            <Route
+              path='/detail-kontruksi'
+              element={<DetailKontruksiLayanan />}
+            />
+            <Route
+              path='/detail-kontruksi-order'
+              element={<DetailKontruksiOrder />}
+            />
+            <Route
+              path='/detail-kontruksi-rab'
+              element={<RancanganAnggaranBiaya />}
+            />
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route path='/component' element={<Component />} />

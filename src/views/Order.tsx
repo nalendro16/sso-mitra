@@ -26,6 +26,10 @@ export const Order: React.FC = () => {
     } else if (data?.status === 'fail') {
       setDataNewOrder(null)
     }
+
+    return () => {
+      setDataNewOrder(null)
+    }
   }, [dataGetNewOrder])
 
   useEffect(() => {
@@ -47,12 +51,22 @@ export const Order: React.FC = () => {
         Order
       </div>
       <AnimatedDiv className='bg-white shadow-xl -mt-16 p-4 rounded-xl mx-4'>
-        <div className='text-primary-darker font-bold'>
-          2 Orderan belum di konfirmasi
-        </div>
-        <div className='text-sm text-neutral-30'>
-          Segera konfirmasi orderan kamu, agar pelanggan tidak menunggu
-        </div>
+        {dataGetNewOrder?.isLoading ? (
+          <Skeleton width={230} height={20} />
+        ) : (
+          <div className='text-primary-darker font-bold'>
+            {dataNewOrder?.length === 0
+              ? 'Belum ada orderan masuk'
+              : `${dataNewOrder?.length} Orderan belum di konfirmasi`}
+          </div>
+        )}
+        {dataGetNewOrder?.isLoading ? (
+          <Skeleton width={260} height={20} />
+        ) : (
+          <div className='text-sm text-neutral-30'>
+            Segera konfirmasi orderan kamu, agar pelanggan tidak menunggu
+          </div>
+        )}
         <div className='mx-4'>
           {dataGetNewOrder?.isLoading ? (
             Array.from([1, 2, 3, 4, 5]).map((item: any) => {

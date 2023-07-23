@@ -14,7 +14,7 @@ import { useGlobalContext } from 'hooks/context'
 export const Login: React.FC = () => {
   const storage = new LocalStorage()
   const navigate = useNavigate()
-  const { openAlert } = useGlobalContext()
+  const { openAlert, setLevelMitra } = useGlobalContext()
   const [dataOauth, getDataOauth] = usePost({ isLoading: false })
   const [dataDetailLogin, getDetailLogin] = useGet({ isLoading: false })
   const [form, setForm] = useState({
@@ -53,6 +53,8 @@ export const Login: React.FC = () => {
   useEffect(() => {
     const { data } = dataDetailLogin
     if (data?.status === 'success') {
+      storage.setItem(StorageKey.LEVEL, data?.result?.level)
+      setLevelMitra(data?.result?.level)
       navigate('/home', { replace: true })
     }
   }, [dataDetailLogin])
