@@ -73,6 +73,9 @@ import ic_calender_order from './ic_calender_order.png'
 import ic_reject_order from './ic_reject_order.png'
 import ic_checked_green from './ic_checked_green.png'
 import ic_right_blue from './ic_right_blue.png'
+import ic_trash_diagnostic from './ic_trash_diagnostic.png'
+import ic_checked_blue from './ic_checked_blue.png'
+import bg_no_product from './bg_no_product.png'
 
 const images = {
   ic_user,
@@ -150,6 +153,9 @@ const images = {
   ic_reject_order,
   ic_checked_green,
   ic_right_blue,
+  ic_trash_diagnostic,
+  ic_checked_blue,
+  bg_no_product,
 }
 
 export default images

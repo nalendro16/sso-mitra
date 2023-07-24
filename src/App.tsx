@@ -25,11 +25,13 @@ import {
   DetailKontruksiLayanan,
   DetailKontruksiOrder,
   RancanganAnggaranBiaya,
+  WithdrawChooseBank,
 } from 'views'
 import { isLogin } from 'utils/auth'
 import { ModalAlert } from 'components'
 import { App as AppCap } from '@capacitor/app'
 import { useGlobalContext } from 'hooks/context'
+import { WithdrawalDetail } from 'views/Withdraw/WithdrawalDetail'
 
 type Props = {
   basename: string
@@ -108,6 +110,11 @@ const App: React.FC<Props> = ({ basename }) => {
             <Route path='/add-address' element={<AddAddress />} />
             <Route path='/withdraw-home' element={<HomeWithdraw />} />
             <Route path='/add-bank-account' element={<AddAccountBank />} />
+            <Route path='/withdraw-detail' element={<WithdrawalDetail />} />
+            <Route
+              path='/choose-bank-account'
+              element={<WithdrawChooseBank />}
+            />
             <Route
               path='/detail-kontruksi'
               element={<DetailKontruksiLayanan />}

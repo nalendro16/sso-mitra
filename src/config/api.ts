@@ -20,4 +20,9 @@ export const API = {
   MITRA_BANK_ACCOUNT_CHECK: '',
   MITRA_BANK_ACCOUNT_CREATE: '/api/mitra/bank-account/create',
   MITRA_BANK_LATEST: '/api/mitra/bank-account/latest',
+  MITRA_BANK_DELETE: '/api/mitra/bank-account/delete',
+
+  SALDO_DETAIL: '/api/mitra/balance/detail',
+  SALDO_WITHDRAW_CHECK: '/api/mitra/balance/withdrawal/fee',
+  SALDO_WITHDRAW: '/api/mitra/balance/withdrawal',
 }
