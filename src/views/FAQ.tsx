@@ -84,7 +84,7 @@ export const FAQ: React.FC = () => {
       <Button
         className='btn-primary !w-full mt-4'
         label='Kontak kami'
-        onClick={() => console.log('hubungi')}
+        onClick={() => console.log('to contact us')}
       />
     </div>
   )
