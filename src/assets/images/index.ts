@@ -71,6 +71,16 @@ import ic_home_panduanmitra from './ic_home_panduanmitra.png'
 import ic_emoji from './ic_emoji.png'
 import ic_calender_order from './ic_calender_order.png'
 import ic_reject_order from './ic_reject_order.png'
+import ic_checked_green from './ic_checked_green.png'
+import ic_right_blue from './ic_right_blue.png'
+import ic_trash_diagnostic from './ic_trash_diagnostic.png'
+import ic_checked_blue from './ic_checked_blue.png'
+import bg_no_product from './bg_no_product.png'
+import ic_plus from './ic_plus.png'
+import ic_edit_rab from './ic_edit_rab.png'
+import ic_delete from './ic_delete.png'
+import ic_wallet from './ic_wallet.png'
+import ic_document from './ic_document.png'
 
 const images = {
   ic_user,
@@ -146,6 +156,16 @@ const images = {
   ic_emoji,
   ic_calender_order,
   ic_reject_order,
+  ic_checked_green,
+  ic_right_blue,
+  ic_trash_diagnostic,
+  ic_checked_blue,
+  bg_no_product,
+  ic_plus,
+  ic_edit_rab,
+  ic_delete,
+  ic_wallet,
+  ic_document,
 }
 
 export default images

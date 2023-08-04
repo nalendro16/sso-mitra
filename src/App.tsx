@@ -21,11 +21,19 @@ import {
   PaymentConfirmed,
   KalenderSedot,
   HomeWithdraw,
+  AddAccountBank,
+  DetailKontruksiLayanan,
+  DetailKontruksiOrder,
+  RancanganAnggaranBiaya,
+  WithdrawChooseBank,
+  FAQ,
+  PanduanMitra,
 } from 'views'
 import { isLogin } from 'utils/auth'
 import { ModalAlert } from 'components'
 import { App as AppCap } from '@capacitor/app'
 import { useGlobalContext } from 'hooks/context'
+import { WithdrawalDetail } from 'views/Withdraw/WithdrawalDetail'
 
 type Props = {
   basename: string
@@ -78,6 +86,7 @@ const App: React.FC<Props> = ({ basename }) => {
         })
       }
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -98,10 +107,30 @@ const App: React.FC<Props> = ({ basename }) => {
             <Route path='/sedot-schedule' element={<KalenderSedot />} />
             <Route path='/payment' element={<Payment />} />
             <Route path='/payment-confirmed' element={<PaymentConfirmed />} />
-            <Route path='/track-order' element={<TrackOrder />} />
+            <Route path='/track-order/:id' element={<TrackOrder />} />
             <Route path='/address-list' element={<AddressList />} />
             <Route path='/add-address' element={<AddAddress />} />
             <Route path='/withdraw-home' element={<HomeWithdraw />} />
+            <Route path='/add-bank-account' element={<AddAccountBank />} />
+            <Route path='/withdraw-detail' element={<WithdrawalDetail />} />
+            <Route path='/FAQ' element={<FAQ />} />
+            <Route path='/panduan-mitra' element={<PanduanMitra />} />
+            <Route
+              path='/choose-bank-account'
+              element={<WithdrawChooseBank />}
+            />
+            <Route
+              path='/detail-kontruksi/:id_transaction'
+              element={<DetailKontruksiLayanan />}
+            />
+            <Route
+              path='/detail-kontruksi-order/:id_transaction'
+              element={<DetailKontruksiOrder />}
+            />
+            <Route
+              path='/detail-kontruksi-rab/:id_transaction/:id'
+              element={<RancanganAnggaranBiaya />}
+            />
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route path='/component' element={<Component />} />

@@ -1,22 +1,27 @@
 import { actionType, alertState } from 'config/state'
 import { alertReducer } from 'helpers/dataReducer'
-import React, { useContext, useReducer } from 'react'
+import React, { useContext, useReducer, useState } from 'react'
 import Reducer from 'utils/reducer'
 
 interface AppContextInterface {
   alert: any
   openAlert: (e: any) => void
   closeAlert: (e: any) => void
+  levelMitra: string
+  setLevelMitra: (e: any) => void
 }
 
 export const AppContext = React.createContext<AppContextInterface>({
   alert: null,
   openAlert: (e: any) => {},
   closeAlert: (e: any) => {},
+  levelMitra: '',
+  setLevelMitra: (e: any) => {},
 })
 
 export const AppProvider: React.FC = ({ children }) => {
   const [alert, dispatchAlert] = useReducer(alertReducer, alertState)
+  const [levelMitra, setLevelMitra] = useState<string>('')
 
   const openAlert = (action: any) => {
     return new Reducer(alert, dispatchAlert).dispatch({
@@ -37,6 +42,8 @@ export const AppProvider: React.FC = ({ children }) => {
         alert,
         openAlert,
         closeAlert,
+        levelMitra,
+        setLevelMitra,
       }}
     >
       {children}

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   AnimatedDiv,
   CardSedotSchedule,
@@ -5,15 +6,18 @@ import {
   KalenderPicker,
 } from 'components'
 import { API } from 'config/api'
+import { StorageKey } from 'config/storage'
 import { format } from 'date-fns'
 import { id } from 'date-fns/locale'
 import { useGet } from 'hooks/useRequest'
 import React, { useState, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useNavigate } from 'react-router-dom'
+import { LocalStorage } from 'utils'
 
 export const KalenderSedot: React.FC = () => {
   const navigate = useNavigate()
+  const storage = new LocalStorage()
   const [dataGetAllDate, getAllDate] = useGet()
   const [dataSelectedDate, getSelectedDate] = useGet()
   const [selectedDay, setSelectedDay] = useState(new Date())
@@ -24,13 +28,26 @@ export const KalenderSedot: React.FC = () => {
   )
 
   useEffect(() => {
-    getAllDate.getRequest(API.CALENDER_GET_DATES + currentMonth)
+    let levelMitra = storage.getItem(StorageKey?.LEVEL)
+    if (levelMitra === 'Kontraktor') {
+      getAllDate.getRequest(API.CALENDER_GET_DATES_KONTRAKTOR + currentMonth)
+    } else {
+      getAllDate.getRequest(API.CALENDER_GET_DATES + currentMonth)
+    }
   }, [currentMonth])
 
   useEffect(() => {
-    getSelectedDate.getRequest(
-      API.CALENDER_GET_DATE + format(selectedDay, 'yyy-MM-dd', { locale: id })
-    )
+    let levelMitra = storage.getItem(StorageKey?.LEVEL)
+    if (levelMitra === 'Kontraktor') {
+      getSelectedDate.getRequest(
+        API.CALENDER_GET_DATE_KONTRAKTOR +
+          format(selectedDay, 'yyy-MM-dd', { locale: id })
+      )
+    } else {
+      getSelectedDate.getRequest(
+        API.CALENDER_GET_DATE + format(selectedDay, 'yyy-MM-dd', { locale: id })
+      )
+    }
   }, [selectedDay])
 
   useEffect(() => {
@@ -58,7 +75,11 @@ export const KalenderSedot: React.FC = () => {
   return (
     <div className='flex flex-col h-full'>
       <Header
-        label='Kalender Sedot'
+        label={
+          storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
+            ? 'Kalender Kontraktor'
+            : 'Kalender Sedot'
+        }
         onBackClick={() => navigate(-1)}
         labelClassName='!font-bold text-white'
         className='bg-gradient-header'
@@ -81,29 +102,32 @@ export const KalenderSedot: React.FC = () => {
         </div>
 
         {dataSelectedDate.isLoading ? (
-          Array.from({ length: 2 }, (index: number) => (
-            <div
-              className='my-6 !h-fit flex-none outline-1 outline outline-neutral-10 rounded-lg px-4 py-3 shadow-md'
-              key={index}
-            >
-              <Skeleton width={80} height={20} />
-              <Skeleton width={250} height={20} className='my-2' />
-              <Skeleton width={200} height={30} />
-            </div>
-          ))
+          Array.from([1, 2, 3, 4, 5]).map((item: any) => {
+            return (
+              <div
+                className='my-6 !h-fit flex-none outline-1 outline outline-neutral-10 rounded-lg px-4 py-3 shadow-md'
+                key={item}
+              >
+                <Skeleton width={80} height={20} />
+                <Skeleton width={250} height={20} className='my-2' />
+                <Skeleton width={200} height={30} />
+              </div>
+            )
+          })
         ) : dataPerDay?.length !== 0 ? (
           dataPerDay?.map((item: any, index: number) => (
-            <CardSedotSchedule data={item} key={index} className='my-4' />
+            <CardSedotSchedule
+              data={item}
+              key={index}
+              className='my-4'
+              onClick={() => navigate(`/track-order/${item?.id_transaction}`)}
+            />
           ))
         ) : (
           <div className='flex justify-center w-full my-12 font-semi-bold text-neutral-20'>
             <div>Belum Ada Order</div>
           </div>
         )}
-
-        {/* <CardSedotSchedule />
-        <CardSedotSchedule className='my-4' />
-        <CardSedotSchedule className='my-4' /> */}
       </AnimatedDiv>
     </div>
   )

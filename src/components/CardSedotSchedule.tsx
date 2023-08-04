@@ -15,20 +15,23 @@ interface CardSedotScheduleProps {
     city?: string
     province?: string
   }
+  onClick: () => void
 }
 export const CardSedotSchedule: React.FC<CardSedotScheduleProps> = ({
   className,
   history,
   data,
+  onClick,
 }) => {
   return (
     <div
       className={clsx(
         `rounded-md bg-white outline outline-1 outline-neutral-10 p-4 text-sm mb-2 ${
-          history ? 'h-32' : 'h-24'
+          history ? 'h-fit' : 'h-24'
         }`,
         className
       )}
+      onClick={() => onClick()}
     >
       {history && (
         <div className='flex justify-between mb-2'>
@@ -54,14 +57,21 @@ export const CardSedotSchedule: React.FC<CardSedotScheduleProps> = ({
           </div>
         )}
       </div>
-      <div className='line-clamp-2'>
-        {`${data?.address ? `${data?.address},` : ''} ${
-          data?.subdistrict ? `${data?.subdistrict},` : ''
-        } ${data?.district ? `${data?.district},` : ''} ${
-          data?.city ? `${data?.city},` : ''
-        } ${data?.province ? `${data?.province},` : ''}`}
-        {data?.postal_code ? data?.postal_code : ''}
-      </div>
+      {(data?.address ||
+        data?.subdistrict ||
+        data?.district ||
+        data?.city ||
+        data?.province ||
+        data?.postal_code) && (
+        <div className='line-clamp-2'>
+          {`${data?.address ? `${data?.address},` : ''} ${
+            data?.subdistrict ? `${data?.subdistrict},` : ''
+          } ${data?.district ? `${data?.district},` : ''} ${
+            data?.city ? `${data?.city},` : ''
+          } ${data?.province ? `${data?.province},` : ''}`}
+          {data?.postal_code ? data?.postal_code : ''}
+        </div>
+      )}
     </div>
   )
 }

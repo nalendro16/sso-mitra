@@ -15,6 +15,7 @@ interface InputProps {
   icon?: string
   error?: string
   isDisabled?: boolean
+  labelClassName?: string
   onChange: (e: any) => void
 }
 
@@ -31,6 +32,7 @@ export const Input: React.FC<InputProps> = ({
   icon,
   error,
   isDisabled,
+  labelClassName,
   onChange,
 }) => {
   const handleOnChange = (e: any) => {
@@ -50,7 +52,11 @@ export const Input: React.FC<InputProps> = ({
   return (
     <div className={clsx('text-sm', className)}>
       {label && (
-        <div className='font-medium text-black-light mb-2'>{label}</div>
+        <div
+          className={clsx('font-medium text-black-light mb-2', labelClassName)}
+        >
+          {label}
+        </div>
       )}
       {type === 'text-area' ? (
         <textarea

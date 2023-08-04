@@ -8,8 +8,11 @@ import { useGet, usePost } from 'hooks/useRequest'
 import { API } from 'config/api'
 import Skeleton from 'react-loading-skeleton'
 import { useGlobalContext } from 'hooks/context'
+import { LocalStorage } from 'utils'
+import { StorageKey } from 'config/storage'
 
 export const Home: React.FC = () => {
+  const storage = new LocalStorage()
   const { openAlert } = useGlobalContext()
   const [dataGetSummaryHome, getSummaryHome] = useGet({ isLoading: false })
   const [dataAcceptOrder, postAcceptOrder] = usePost({ isLoading: false })
@@ -44,12 +47,22 @@ export const Home: React.FC = () => {
     } else if (data?.status === 'fail') {
       setDataConfirmed(null)
     }
+
+    return () => {
+      setDataConfirmed(null)
+    }
   }, [dataConfirmedOrder])
 
   useEffect(() => {
-    getNewOrder.getRequest(API.NEW_ORDER)
+    let levelMitra = storage.getItem(StorageKey?.LEVEL)
     getSummaryHome.getRequest(API.SUMMARY_HOME)
-    getConfirmedOrder.getRequest(API.CONFIRMED_ORDER + `today`)
+    if (levelMitra === 'Kontraktor') {
+      getNewOrder.getRequest(API.NEW_ORDER_KONTRAKTOR)
+      getConfirmedOrder.getRequest(API.CONFIRMED_ORDER_KONTRAKTOR)
+    } else {
+      getNewOrder.getRequest(API.NEW_ORDER)
+      getConfirmedOrder.getRequest(API.CONFIRMED_ORDER)
+    }
   }, [])
 
   useEffect(() => {
@@ -133,7 +146,9 @@ export const Home: React.FC = () => {
           <img src={images.ic_calendar} alt='' className='h-7 w-9 ml-2 mr-1' />
           <div>
             <div className='text-primary-darker font-bold text-sm'>
-              Kalender Sedot
+              {storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
+                ? 'Kalender Kontraktor'
+                : 'Kalender Sedot'}
             </div>
             <div className='text-xxs text-neutral-30 w-3/4 line-clamp-2'>
               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quod
@@ -144,7 +159,10 @@ export const Home: React.FC = () => {
           <img src={images.ic_stroke_right} alt='' className='w-3 h-4' />
         </div>
 
-        <div className='flex items-center justify-between gap-4 my-4 mt-6 mx-4'>
+        <div
+          className='flex items-center justify-between gap-4 my-4 mt-6 mx-4'
+          onClick={() => navigate('/panduan-mitra')}
+        >
           <img src={images.ic_home_panduanmitra} alt='' className='h-10 w-12' />
           <div>
             <div className='text-primary-darker font-bold text-sm'>
@@ -163,19 +181,26 @@ export const Home: React.FC = () => {
           Jadwal Sedot
         </div>
         {dataConfirmedOrder.isLoading ? (
-          Array.from({ length: 2 }, (index: number) => (
-            <div
-              className='my-6 !h-fit flex-none outline-1 outline outline-neutral-10 rounded-lg px-4 py-3 shadow-md'
-              key={index}
-            >
-              <Skeleton width={80} height={20} />
-              <Skeleton width={250} height={20} className='my-2' />
-              <Skeleton width={200} height={30} />
-            </div>
-          ))
+          Array.from([1, 2, 3, 4, 5]).map((item: any) => {
+            return (
+              <div
+                className='my-6 !h-fit flex-none outline-1 outline outline-neutral-10 rounded-lg px-4 py-3 shadow-md'
+                key={item}
+              >
+                <Skeleton width={80} height={20} />
+                <Skeleton width={250} height={20} className='my-2' />
+                <Skeleton width={200} height={30} />
+              </div>
+            )
+          })
         ) : dataConfirmed?.length !== 0 ? (
-          dataConfirmed?.map((item: any, index: number) => (
-            <CardSedotSchedule data={item} key={index} className='my-4' />
+          dataConfirmed?.map((item: any) => (
+            <CardSedotSchedule
+              data={item}
+              key={item?.id_transaction}
+              className='my-4 '
+              onClick={() => navigate(`/track-order/${item?.id_transaction}`)}
+            />
           ))
         ) : (
           <div className='flex justify-center w-full my-12 font-semi-bold text-neutral-20'>
@@ -187,30 +212,35 @@ export const Home: React.FC = () => {
           <div className='text-primary-darker font-bold text-sm'>
             Orderan Terbaru
           </div>
-          <div className='text-sm text-neutral-30'>Lihat Semua</div>
+          {/* <div className='text-sm text-neutral-30'>Lihat Semua</div> */}
         </div>
 
         <div className='-mx-4 scroll-x pb-4'>
           {dataGetNewOrder?.isLoading ? (
-            Array.from({ length: 3 }, (index: number) => (
-              <div
-                className='my-6 !w-4/5 !h-fit flex-none outline-1 outline outline-neutral-10 rounded-lg px-4 py-3 shadow-md'
-                key={index}
-              >
-                <Skeleton width={80} height={20} />
-                <Skeleton width={250} height={20} className='my-2' />
-                <Skeleton width={200} height={30} />
-              </div>
-            ))
+            Array.from([1, 2]).map((item: any) => {
+              return (
+                <div
+                  className='my-6 !w-4/5 !h-fit flex-none outline-1 outline outline-neutral-10 rounded-lg px-4 py-3 shadow-md'
+                  key={item}
+                >
+                  <Skeleton width={80} height={20} />
+                  <Skeleton width={250} height={20} className='my-2' />
+                  <Skeleton width={200} height={30} />
+                </div>
+              )
+            })
           ) : dataNewOrder?.length !== 0 ? (
             dataNewOrder?.map((item: any, index: number) => (
               <NewOrder
                 data={item}
                 className='my-6 !w-4/5 !h-fit flex-none'
-                key={index}
+                key={item.id_transaction}
                 isLoading={dataAcceptOrder.isLoading}
                 onCancelOrder={() => console.log('order canceled')}
                 onAcceptOrder={() => handleAcceptOrder(item.id_transaction)}
+                onAcceptOrderKontraktor={() =>
+                  navigate(`/detail-kontruksi-order/${item.id_transaction}`)
+                }
               />
             ))
           ) : (
@@ -220,30 +250,33 @@ export const Home: React.FC = () => {
           )}
         </div>
 
-        <div className='flex justify-between'>
-          <div className='text-primary-darker font-bold text-sm'>
-            Ulasan Pengguna
+        {storage.getItem(StorageKey?.LEVEL) === 'Kontraktor' && (
+          <div className='flex justify-between'>
+            <div className='text-primary-darker font-bold text-sm'>
+              Ulasan Pengguna
+            </div>
           </div>
-        </div>
+        )}
 
         <div className='-mx-4 scroll-x pb-8'>
-          {USER_REVIEW?.map((item: any, index: number) => (
-            <div
-              className='shadow-xl my-6 !w-4/5 !h-fit flex-none px-4 rounded-lg py-4'
-              key={index}
-            >
-              <div className='flex justify-between items-center'>
-                <div className='text-primary-darker font-bold text-sm'>
-                  {item.name}
+          {storage.getItem(StorageKey?.LEVEL) === 'Kontraktor' &&
+            USER_REVIEW?.map((item: any, index: number) => (
+              <div
+                className='shadow-xl my-6 !w-4/5 !h-fit flex-none px-4 rounded-lg py-4'
+                key={index}
+              >
+                <div className='flex justify-between items-center'>
+                  <div className='text-primary-darker font-bold text-sm'>
+                    {item.name}
+                  </div>
+                  <div className='text-xs text-neutral-20'>{item.time}</div>
                 </div>
-                <div className='text-xs text-neutral-20'>{item.time}</div>
+                <div className='justify-between flex items-center'>
+                  <div className='line-clamp-2 mt-2'>{item.review_text}</div>
+                  <img src={item.emoji} alt='' className='h-6' />
+                </div>
               </div>
-              <div className='justify-between flex items-center'>
-                <div className='line-clamp-2 mt-2'>{item.review_text}</div>
-                <img src={item.emoji} alt='' className='h-6' />
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </AnimatedDiv>
     </div>

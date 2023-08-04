@@ -84,7 +84,7 @@ export const MENU_PROFILE = [
   {
     label: 'FAQs',
     icon: images.ic_profile_faq,
-    to: '',
+    to: '/FAQ',
   },
   {
     label: 'Berikan Rating Applikasi',
