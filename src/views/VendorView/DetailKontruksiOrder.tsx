@@ -1,38 +1,69 @@
 import images from 'assets/images'
-import { Button, Header, Input, Modal } from 'components'
+import { Button, Header, Modal } from 'components'
 import { API } from 'config/api'
 import { useGlobalContext } from 'hooks/context'
-import { useGet } from 'hooks/useRequest'
-import { useState } from 'react'
+import { useGet, usePost } from 'hooks/useRequest'
+import { useState, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 export const DetailKontruksiOrder: React.FC = () => {
+  const { id_transaction } = useParams() as any
   const navigate = useNavigate()
   const { openAlert } = useGlobalContext()
-  const [isShowModal, setShowModal] = useState<boolean>(false)
-  const [dataDetail, setDataDetail] = useState<any>()
   const [dataNewOrderDetail, getDataDetailNewOrder] = useGet({
     isLoading: false,
   })
-  const [dataRejectOrder, postRejectOrder] = useGet({ isLoading: false })
-  const [dataAcceptOrder, postAcceptOrder] = useGet({ isLoading: false })
+  const [dataRejectOrder, postRejectOrder] = usePost({ isLoading: false })
+  const [dataAcceptOrder, postAcceptOrder] = usePost({ isLoading: false })
   const [form, setForm] = useState({
-    tipe: 'Renovasi',
-    deskripsi:
-      'Saya ingin membangun toilet agar lebih luas dan mudh dibersihkan',
-    alamat: 'Jl. Wates, no.18 Sleman',
-    tanggal: '20 Juli 2023',
-    anggaran: '2.500.000',
+    tipe: '',
+    deskripsi: '',
+    alamat: '',
+    tanggal: '',
+    anggaran: '',
+    attachment: '',
   })
 
+  useEffect(() => {
+    const { data } = dataNewOrderDetail
+    if (data?.status === 'success') {
+      setForm({
+        tipe: data?.result?.name,
+        deskripsi: data?.result?.description,
+        alamat: `${data?.result?.address}, ${data?.result?.subdistrict}, ${data?.result?.district}, ${data?.result?.city} `,
+        tanggal: data?.result?.order_time_formatted,
+        anggaran: data?.result?.anggaran,
+        attachment: data?.result?.attachment,
+      })
+    } else if (data?.status === 'fail') {
+      console.log(data?.messages)
+    }
+  }, [dataNewOrderDetail])
+
+  useEffect(() => {
+    getDataDetailNewOrder.getRequest(
+      API.NEW_ORDER_DETAIL_KONTRAKTOR + `${id_transaction}`
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id_transaction])
+
+  useEffect(() => {
+    const { data } = dataAcceptOrder
+    if (data?.status === 'success') {
+      navigate('/payment-confirmed', { state: data?.result })
+    } else if (data?.status === 'fail') {
+      console.log(data?.messages)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataAcceptOrder])
+
   const onAcceptOrder = () => {
-    navigate('/detail-kontruksi')
-    // postAcceptOrder.getRequest(API)
+    postAcceptOrder.getRequest(API.RENOV_CONFIRM, { id_transaction })
   }
 
   const onCancelOrder = () => {
-    postRejectOrder.getRequest(API)
+    // postRejectOrder.getRequest(API)
   }
 
   return (
@@ -96,17 +127,7 @@ export const DetailKontruksiOrder: React.FC = () => {
         </div>
         <div className='grid grid-cols-7 gap-2'>
           <img
-            src='http://placekitten.com/g/300/300'
-            alt=''
-            className='h-16 object-cover rounded-md'
-          />
-          <img
-            src='http://placekitten.com/g/300/303'
-            alt=''
-            className='h-16 object-cover rounded-md'
-          />
-          <img
-            src='http://placekitten.com/g/300/302'
+            src={form?.attachment}
             alt=''
             className='h-16 object-cover rounded-md'
           />
@@ -143,119 +164,12 @@ export const DetailKontruksiOrder: React.FC = () => {
           />
           <Button
             className='btn-primary w-full basis-1/2'
-            onClick={() => setShowModal(true)}
+            onClick={() => onAcceptOrder()}
             label='Terima'
             isLoading={dataAcceptOrder?.isLoading}
           />
         </div>
       </div>
-
-      <Modal
-        show={isShowModal}
-        onHide={() => setShowModal(false)}
-        showClassName='!opacity-10'
-        contentClassName='animate-ease-body bg-white h-2/3 pt-4 px-4 bottom-0 fixed w-full max-w-content rounded-t-2xl'
-      >
-        <div className='!font-bold text-primary-darker mt-2 mb-6'>
-          {'Konfirmasi Pesanan'}
-        </div>
-        <div className='flex justify-between text-sm my-2'>
-          <div>Order dari</div>
-          <div>Tanggal order</div>
-        </div>
-
-        <div className='flex justify-between text-primary-darker font-bold text-sm'>
-          {dataNewOrderDetail?.isLoading ? (
-            <Skeleton width={120} />
-          ) : (
-            <div>{dataDetail?.order_by}</div>
-          )}
-          {dataNewOrderDetail?.isLoading ? (
-            <Skeleton width={120} />
-          ) : (
-            <div>{dataDetail?.order_time_formatted}</div>
-          )}
-        </div>
-
-        <div className='w-full flex justify-center'>
-          <div className='flex flex-col justify-center w-fit my-4 items-center'>
-            {dataNewOrderDetail?.isLoading ? (
-              <Skeleton width={180} height={20} />
-            ) : (
-              <div>
-                {'Layanan sedot '}
-                <span className='text-primary-darker font-bold'>
-                  {dataDetail?.name}
-                </span>
-              </div>
-            )}
-
-            {dataNewOrderDetail?.isLoading ? (
-              <Skeleton width={60} height={60} className='my-4' />
-            ) : (
-              <div className='relative text-center my-4'>
-                <img src={images.ic_calender_order} alt='' />
-
-                <div className='font-bold text-3xl absolute top-8 left-6'>
-                  {dataDetail?.date_sedot_formatted}
-                </div>
-              </div>
-            )}
-
-            {dataNewOrderDetail?.isLoading ? (
-              <Skeleton width={120} height={20} className='my-4' />
-            ) : (
-              <div className='!font-bold text-xl text-primary-darker'>
-                {dataDetail?.time_sedot_formatted}
-              </div>
-            )}
-
-            {dataNewOrderDetail?.isLoading ? (
-              <Skeleton width={120} height={20} />
-            ) : (
-              <div className='text-neutral-20 text-sm line-clamp-2 w-3/4 text-center mb-4'>
-                {`${dataDetail?.address ? `${dataDetail?.address},` : ''} ${
-                  dataDetail?.subdistrict ? `${dataDetail?.subdistrict},` : ''
-                } ${dataDetail?.district ? `${dataDetail?.district},` : ''} ${
-                  dataDetail?.city ? `${dataDetail?.city},` : ''
-                } ${dataDetail?.province ? `${dataDetail?.province},` : ''}`}
-                {dataDetail?.postal_code ? dataDetail?.postal_code : ''}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className=' w-full bg-white px-8 pb-4 flex justify-between gap-4'>
-          <Button
-            className='btn-outline !border-primary-lighter w-full basis-1/2'
-            onClick={() =>
-              openAlert({
-                messages:
-                  'Sepertinya kamu sedang lelah setelah menyelesaikan banyak pekerjaan',
-                title: 'Yakin menolak orderan?',
-                isConfirm: true,
-                showBtnClose: false,
-                images: images.ic_reject_order,
-                imagesClassName: 'mb-4 text-center',
-                btnConfirmText: 'Tolak',
-                callback: (e: any) => {
-                  if (e.isConfirm) {
-                    onCancelOrder()
-                  }
-                },
-              })
-            }
-            isLoading={dataAcceptOrder?.isLoading}
-            label='Tolak'
-          />
-          <Button
-            className='btn-primary w-full basis-1/2'
-            onClick={onAcceptOrder}
-            label='Terima'
-            isLoading={dataAcceptOrder?.isLoading}
-          />
-        </div>
-      </Modal>
     </div>
   )
 }

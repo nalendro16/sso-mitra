@@ -26,6 +26,8 @@ import {
   DetailKontruksiOrder,
   RancanganAnggaranBiaya,
   WithdrawChooseBank,
+  FAQ,
+  PanduanMitra,
 } from 'views'
 import { isLogin } from 'utils/auth'
 import { ModalAlert } from 'components'
@@ -111,20 +113,22 @@ const App: React.FC<Props> = ({ basename }) => {
             <Route path='/withdraw-home' element={<HomeWithdraw />} />
             <Route path='/add-bank-account' element={<AddAccountBank />} />
             <Route path='/withdraw-detail' element={<WithdrawalDetail />} />
+            <Route path='/FAQ' element={<FAQ />} />
+            <Route path='/panduan-mitra' element={<PanduanMitra />} />
             <Route
               path='/choose-bank-account'
               element={<WithdrawChooseBank />}
             />
             <Route
-              path='/detail-kontruksi'
+              path='/detail-kontruksi/:id_transaction'
               element={<DetailKontruksiLayanan />}
             />
             <Route
-              path='/detail-kontruksi-order'
+              path='/detail-kontruksi-order/:id_transaction'
               element={<DetailKontruksiOrder />}
             />
             <Route
-              path='/detail-kontruksi-rab'
+              path='/detail-kontruksi-rab/:id_transaction/:id'
               element={<RancanganAnggaranBiaya />}
             />
           </Route>

@@ -6,15 +6,18 @@ import {
   KalenderPicker,
 } from 'components'
 import { API } from 'config/api'
+import { StorageKey } from 'config/storage'
 import { format } from 'date-fns'
 import { id } from 'date-fns/locale'
 import { useGet } from 'hooks/useRequest'
 import React, { useState, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useNavigate } from 'react-router-dom'
+import { LocalStorage } from 'utils'
 
 export const KalenderSedot: React.FC = () => {
   const navigate = useNavigate()
+  const storage = new LocalStorage()
   const [dataGetAllDate, getAllDate] = useGet()
   const [dataSelectedDate, getSelectedDate] = useGet()
   const [selectedDay, setSelectedDay] = useState(new Date())
@@ -25,13 +28,26 @@ export const KalenderSedot: React.FC = () => {
   )
 
   useEffect(() => {
-    getAllDate.getRequest(API.CALENDER_GET_DATES + currentMonth)
+    let levelMitra = storage.getItem(StorageKey?.LEVEL)
+    if (levelMitra === 'Kontraktor') {
+      getAllDate.getRequest(API.CALENDER_GET_DATES_KONTRAKTOR + currentMonth)
+    } else {
+      getAllDate.getRequest(API.CALENDER_GET_DATES + currentMonth)
+    }
   }, [currentMonth])
 
   useEffect(() => {
-    getSelectedDate.getRequest(
-      API.CALENDER_GET_DATE + format(selectedDay, 'yyy-MM-dd', { locale: id })
-    )
+    let levelMitra = storage.getItem(StorageKey?.LEVEL)
+    if (levelMitra === 'Kontraktor') {
+      getSelectedDate.getRequest(
+        API.CALENDER_GET_DATE_KONTRAKTOR +
+          format(selectedDay, 'yyy-MM-dd', { locale: id })
+      )
+    } else {
+      getSelectedDate.getRequest(
+        API.CALENDER_GET_DATE + format(selectedDay, 'yyy-MM-dd', { locale: id })
+      )
+    }
   }, [selectedDay])
 
   useEffect(() => {
@@ -59,7 +75,11 @@ export const KalenderSedot: React.FC = () => {
   return (
     <div className='flex flex-col h-full'>
       <Header
-        label='Kalender Sedot'
+        label={
+          storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
+            ? 'Kalender Kontraktor'
+            : 'Kalender Sedot'
+        }
         onBackClick={() => navigate(-1)}
         labelClassName='!font-bold text-white'
         className='bg-gradient-header'

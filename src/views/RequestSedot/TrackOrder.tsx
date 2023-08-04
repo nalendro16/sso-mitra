@@ -6,20 +6,38 @@ import { useGet, usePost } from 'hooks/useRequest'
 import { API } from 'config/api'
 import Skeleton from 'react-loading-skeleton'
 import { useGlobalContext } from 'hooks/context'
+import { LocalStorage } from 'utils'
+import { StorageKey } from 'config/storage'
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
 
 export const TrackOrder: React.FC = () => {
   const navigate = useNavigate()
+  const storage = new LocalStorage()
   const { openAlert } = useGlobalContext()
   const { id } = useParams()
   const [dataTracking, setDataTracking] = useState<any>([])
   const [dataOrderDetail, setDataOrderDetail] = useState<any>()
   const [dataGetTracking, getTrackingData] = useGet({ isLoading: false })
   const [dataTrackingFinish, getTrackingFinish] = usePost({ isLoading: false })
+  const [doneSurvey, postDoneSurvey] = usePost({ isLoading: false })
 
   useEffect(() => {
-    getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL + id)
+    let levelMitra = storage.getItem(StorageKey?.LEVEL)
+    if (levelMitra === 'Kontraktor') {
+      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL_KONTRAKTOR + id)
+    } else {
+      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL + id)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
+
+  useEffect(() => {
+    const { data } = doneSurvey
+    if (data?.status === 'success') {
+      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL_KONTRAKTOR + id)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [doneSurvey])
 
   useEffect(() => {
     const { data } = dataGetTracking
@@ -40,6 +58,7 @@ export const TrackOrder: React.FC = () => {
         showBtnClose: false,
         isConfirm: true,
       })
+      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL + id)
     } else if (data?.status === 'fail') {
       openAlert({
         messages: data?.messages,
@@ -63,6 +82,23 @@ export const TrackOrder: React.FC = () => {
       },
     })
   }
+
+  const handleConfirmRenov = () => {
+    openAlert({
+      messages: 'Pastikan anda sudah melakukan survey lokasi?',
+      isConfirm: true,
+      btnConfirmText: 'Ya',
+      btnCloseText: 'Tidak',
+      callback: (e: any) => {
+        if (e.isConfirm) {
+          postDoneSurvey.getRequest(API.SURVEY_RENOV, {
+            id_transaction: dataOrderDetail?.id_transaction,
+          })
+        }
+      },
+    })
+  }
+
   return (
     <div className='mb-16'>
       <Header
@@ -100,7 +136,9 @@ export const TrackOrder: React.FC = () => {
             <Skeleton width={200} height={18} className='my-0.5' />
           ) : (
             <div className='text-neutral-10'>
-              {'Layanan sedot '}
+              {storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
+                ? 'Layanan '
+                : 'Layanan sedot '}
               <span className='text-neutral-10 font-bold'>
                 {dataOrderDetail?.name}
               </span>
@@ -113,7 +151,8 @@ export const TrackOrder: React.FC = () => {
             <div className='relative text-center my-4'>
               <img src={images.ic_calender_order} alt='' />
               <div className='font-bold text-3xl absolute top-8 left-6'>
-                {dataOrderDetail?.date_sedot_formatted}
+                {dataOrderDetail?.date_sedot_formatted ||
+                  dataOrderDetail?.date_renov_formatted}
               </div>
             </div>
           )}
@@ -148,12 +187,23 @@ export const TrackOrder: React.FC = () => {
       </AnimatedDiv>
 
       <AnimatedDiv className='bg-white shadow-xl -mt-12 p-4 rounded-xl mx-4'>
-        <div className='bg-primary-base p-4 rounded-md'>
-          <div></div>
-          <div className='text-sm text-white'>Progress</div>
-          <div className='font-semi-bold text-white'>Kontruksi Renovasi</div>
-          <div className='text-sm text-neutral-10'>
-            Klik centang jika pekerjaan selsai
+        <div className='bg-primary-base p-4 rounded-md justify-between flex'>
+          <div>
+            <div className='text-sm text-white'>Progress</div>
+            <div className='font-semi-bold text-white'>Kontruksi Renovasi</div>
+            <div className='text-sm text-neutral-10'>
+              Klik centang jika pekerjaan selsai
+            </div>
+          </div>
+          <div style={{ width: 100, height: 100 }} className='p-2'>
+            <CircularProgressbar
+              value={dataGetTracking?.data?.result?.percentage}
+              text={`${dataGetTracking?.data?.result?.percentage}%`}
+              styles={buildStyles({
+                textColor: 'white',
+                pathColor: 'white',
+              })}
+            />
           </div>
         </div>
 
@@ -162,7 +212,19 @@ export const TrackOrder: React.FC = () => {
             <StepItem
               data={item}
               key={index}
-              onLastStep={() => handleLastStep()}
+              onLastStep={() =>
+                storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
+                  ? handleConfirmRenov()
+                  : handleLastStep()
+              }
+              onPengajuanRAB={() =>
+                navigate(
+                  `/detail-kontruksi-rab/${dataOrderDetail?.id_transaction_renovasi}/${dataOrderDetail?.id_transaction}`
+                )
+              }
+              onFinalStep={() =>
+                navigate(`/detail-kontruksi/${dataOrderDetail?.id_transaction}`)
+              }
             />
           ))}
         </div>

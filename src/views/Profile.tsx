@@ -100,7 +100,7 @@ export const Profile: React.FC = () => {
           key={index}
           className='mb-1'
           item={item}
-          onClick={() => console.log(item)}
+          onClick={() => navigate(item.to)}
         />
       ))}
 

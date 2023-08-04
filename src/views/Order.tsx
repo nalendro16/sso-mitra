@@ -90,6 +90,9 @@ export const Order: React.FC = () => {
                 isLoading={dataAcceptOrder.isLoading}
                 onCancelOrder={() => console.log('order canceled')}
                 onAcceptOrder={() => handleAcceptOrder(item.id_transaction)}
+                onAcceptOrderKontraktor={() =>
+                  navigate(`/detail-kontruksi-order/${item.id_transaction}`)
+                }
               />
             ))
           ) : (

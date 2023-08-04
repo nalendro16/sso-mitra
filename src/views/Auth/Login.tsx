@@ -110,15 +110,25 @@ export const Login: React.FC = () => {
           {'Masukkan nomor handphone kamu untuk melanjutkan'}
         </div>
 
-        <Input
-          className='mb-4'
-          name='phone'
-          error={error.phone}
-          placeholder='08123849583'
-          label='No. Handphone'
-          value={form.phone}
-          onChange={(e) => handleChangeForm(e)}
-        />
+        <div className='font-semi-bold text-neutral-30 mb-2 text-sm'>
+          No. Handphone
+        </div>
+        <div className='flex items-center justify-between rounded-md bg-neutral-10 border-none px-3 py-2.5 mb-4'>
+          <input
+            className='appearance-none focus:outline-none w-full focus:border-active text-sm mr-3 bg-neutral-10'
+            type='number'
+            placeholder='Nomor Handphone'
+            value={form?.phone}
+            name='phone'
+            onChange={(e) =>
+              setForm({
+                ...form,
+                phone: e.target.value,
+              })
+            }
+            autoComplete='off'
+          />
+        </div>
 
         <InputPIN
           className='mb-4'

@@ -7,6 +7,8 @@ import { useGlobalContext } from 'hooks/context'
 import { useGet } from 'hooks/useRequest'
 import { API } from 'config/api'
 import Skeleton from 'react-loading-skeleton'
+import { LocalStorage } from 'utils'
+import { StorageKey } from 'config/storage'
 
 interface NewOrderProps {
   className?: string
@@ -19,6 +21,7 @@ interface NewOrderProps {
   isLoading?: boolean
   onCancelOrder: () => void
   onAcceptOrder: () => void
+  onAcceptOrderKontraktor: () => void
 }
 
 export const NewOrder: React.FC<NewOrderProps> = ({
@@ -27,8 +30,11 @@ export const NewOrder: React.FC<NewOrderProps> = ({
   isLoading,
   onCancelOrder,
   onAcceptOrder,
+  onAcceptOrderKontraktor,
 }) => {
   const { openAlert } = useGlobalContext()
+  const storage = new LocalStorage()
+  let levelMitra = storage.getItem(StorageKey?.LEVEL)
   const [dataNewOrderDetail, getDataNewOrderDetail] = useGet({
     isLoading: false,
   })
@@ -45,11 +51,14 @@ export const NewOrder: React.FC<NewOrderProps> = ({
   }, [dataNewOrderDetail])
 
   const handleOpenModal = () => {
-    setShowModal(true)
-    console.log(data?.id_transaction)
-    getDataNewOrderDetail.getRequest(
-      API.NEW_ORDER_DETAIL + `${data.id_transaction}`
-    )
+    if (levelMitra === 'Kontraktor') {
+      onAcceptOrderKontraktor()
+    } else {
+      setShowModal(true)
+      getDataNewOrderDetail.getRequest(
+        API.NEW_ORDER_DETAIL + `${data.id_transaction}`
+      )
+    }
   }
 
   return (
@@ -118,7 +127,8 @@ export const NewOrder: React.FC<NewOrderProps> = ({
                 <img src={images.ic_calender_order} alt='' />
 
                 <div className='font-bold text-3xl absolute top-8 left-6'>
-                  {dataDetail?.date_sedot_formatted}
+                  {dataDetail?.date_sedot_formatted ||
+                    dataDetail?.date_renov_formatted}
                 </div>
               </div>
             )}
