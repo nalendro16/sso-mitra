@@ -1,16 +1,85 @@
 import { Button, Header, Input } from 'components'
-import React, { useState } from 'react'
+import { API } from 'config/api'
+import { clientID, clientSecret } from 'config/app'
+import { StorageKey } from 'config/storage'
+import { useGlobalContext } from 'hooks/context'
+import { usePost } from 'hooks/useRequest'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { validateEmail } from 'utils/validationEmail'
+import { LocalStorage } from 'utils'
 
 export const PasswordReset: React.FC = () => {
   const navigate = useNavigate()
+  const { openAlert } = useGlobalContext()
+  const storage = new LocalStorage()
+  let isHasGuestToken: any = storage.getItem(StorageKey.ACCESS_TOKEN)
+  const [clientLogin, postClientLogin] = usePost()
+  const [dataResetPassword, postResetPassword] = usePost({ isLoading: false })
   const [form, setForm] = useState({
-    email: '',
+    username: '',
   })
   const [error, setError] = useState({
-    email: '',
+    username: '',
   })
+
+  useEffect(() => {
+    const { data } = dataResetPassword
+    if (data?.status === 'success') {
+      openAlert({
+        title: data?.messages,
+        messages:
+          'Silahkan periksa email/nomor handphone anda untuk melihat password sementara, lalu login dengan password sementara',
+        showBtnClose: false,
+        btnConfirmText: 'Oke',
+        isConfirm: true,
+        callback: (e: any) => {
+          if (e.isConfirm) {
+            navigate('/login')
+          }
+        },
+      })
+    } else if (data?.status === 'fail') {
+      openAlert({
+        showBtnClose: false,
+        btnConfirmText: 'Oke',
+        isConfirm: true,
+        messages: data?.messages,
+      })
+    }
+  }, [dataResetPassword])
+
+  useEffect(() => {
+    if (!isHasGuestToken) {
+      postClientLogin.getRequest(API.OAUTH_LOGIN, {
+        grant_type: 'client_credentials',
+        client_id: clientID,
+        client_secret: clientSecret,
+        scope: 'apps',
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHasGuestToken])
+
+  useEffect(() => {
+    if (!clientLogin.error) {
+      if (clientLogin?.data?.status === 'fail') {
+        openAlert({
+          messages: clientLogin.data?.messages,
+          showBtnClose: false,
+          isConfirm: true,
+        })
+      } else if (clientLogin.data?.access_token) {
+        storage.setItem(StorageKey.ACCESS_TOKEN, clientLogin.data)
+      }
+    } else {
+      openAlert({
+        messages: clientLogin.error,
+        showBtnClose: false,
+        isConfirm: true,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clientLogin])
 
   const handleChangeForm = (e: any) => {
     setForm({
@@ -22,8 +91,8 @@ export const PasswordReset: React.FC = () => {
 
   const validationForm = () => {
     const newError = { ...error }
-    if (!validateEmail(form.email)) {
-      newError.email = 'Masukkan email sesuai format, ex: konsul@gmail.com'
+    if (!form.username) {
+      newError.username = 'Masukkan email / No.telephone sesuai format'
     }
     return newError
   }
@@ -33,7 +102,7 @@ export const PasswordReset: React.FC = () => {
     if (Object.values(findErrors).some((err) => err !== '')) {
       setError(findErrors)
     } else {
-      console.log(form)
+      postResetPassword.getRequest(API.PASSWORD_RESET, form)
     }
     // setShowSetting(true)
     // navigate('/register')
@@ -59,11 +128,11 @@ export const PasswordReset: React.FC = () => {
 
       <Input
         className='mb-7'
-        name='email'
-        label='Email'
+        name='username'
+        label='Email/ No.Hp'
         placeholder='Ketikkan Email'
-        value={form?.email}
-        error={error?.email}
+        value={form?.username}
+        error={error?.username}
         onChange={handleChangeForm}
       />
 
@@ -71,6 +140,7 @@ export const PasswordReset: React.FC = () => {
         className='btn-primary !w-full'
         label='Submit'
         onClick={onSubmit}
+        isLoading={dataResetPassword.isLoading}
       />
     </div>
   )

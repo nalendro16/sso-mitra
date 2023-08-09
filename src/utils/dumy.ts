@@ -64,17 +64,17 @@ export const MENU_PROFILE = [
   {
     label: 'Info Akun',
     icon: images.ic_profile_info,
-    to: '',
+    to: '/acc-info',
   },
   {
-    label: 'Chat',
+    label: 'Hubungi kami',
     icon: images.ic_profile_chat,
-    to: '',
+    to: '/contact-us',
   },
   {
     label: 'Ubah Password',
     icon: images.ic_profile_changepass,
-    to: '',
+    to: '/password-update',
   },
   {
     label: 'Tentang Aplikasi',

@@ -81,6 +81,12 @@ import ic_edit_rab from './ic_edit_rab.png'
 import ic_delete from './ic_delete.png'
 import ic_wallet from './ic_wallet.png'
 import ic_document from './ic_document.png'
+import ic_update_image from './ic_update_image.png'
+import ic_ask from './ic_ask.png'
+import ic_close_black from './ic_close_black.png'
+import ic_image_upload from './ic_image_upload.png'
+import ic_upload_photo from './ic_upload_photo.png'
+import ic_pdfplaceholder from './ic_pdfplaceholder.png'
 
 const images = {
   ic_user,
@@ -166,6 +172,12 @@ const images = {
   ic_delete,
   ic_wallet,
   ic_document,
+  ic_update_image,
+  ic_ask,
+  ic_close_black,
+  ic_image_upload,
+  ic_upload_photo,
+  ic_pdfplaceholder,
 }
 
 export default images

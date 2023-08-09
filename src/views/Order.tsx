@@ -6,17 +6,20 @@ import { useGet, usePost } from 'hooks/useRequest'
 import { useState, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useNavigate } from 'react-router-dom'
-import { NEWORDER_LIST, USER_REVIEW } from 'utils/dumy'
+import { USER_REVIEW } from 'utils/dumy'
 
 export const Order: React.FC = () => {
   const navigate = useNavigate()
   const { openAlert } = useGlobalContext()
+  const [listOrder, setListOrder] = useState<any>()
   const [dataGetNewOrder, getNewOrder] = useGet({ isLoading: false })
   const [dataAcceptOrder, postAcceptOrder] = usePost({ isLoading: false })
+  const [dataHistoryOrder, postHistoryOrder] = usePost({ isLoading: false })
   const [dataNewOrder, setDataNewOrder] = useState<any>([])
 
   useEffect(() => {
     getNewOrder.getRequest(API.NEW_ORDER)
+    postHistoryOrder.getRequest(API.TRANSACTION_HISTORY_ORDER)
   }, [])
 
   useEffect(() => {
@@ -31,6 +34,13 @@ export const Order: React.FC = () => {
       setDataNewOrder(null)
     }
   }, [dataGetNewOrder])
+
+  useEffect(() => {
+    const { data } = dataHistoryOrder
+    if (data?.status === 'success') {
+      setListOrder(data?.result?.data)
+    }
+  }, [dataHistoryOrder])
 
   useEffect(() => {
     const { data } = dataAcceptOrder
@@ -107,8 +117,16 @@ export const Order: React.FC = () => {
         <div className='text-primary-darker font-bold text-sm mt-8 mb-4'>
           Riwayat Order
         </div>
-        <CardSedotSchedule history onClick={() => console.log('id')} />
-        <CardSedotSchedule history onClick={() => console.log('id')} />
+
+        {listOrder?.map((item: any, index: number) => (
+          <CardSedotSchedule
+            data={item}
+            key={index}
+            className='my-4'
+            history
+            onClick={() => navigate(`/track-order/${item?.id_transaction}`)}
+          />
+        ))}
       </AnimatedDiv>
 
       <div className='flex justify-between'>

@@ -28,12 +28,17 @@ import {
   WithdrawChooseBank,
   FAQ,
   PanduanMitra,
+  InfoAccount,
+  DetailTransaction,
+  ContactUs,
+  PasswordUpdate,
 } from 'views'
 import { isLogin } from 'utils/auth'
 import { ModalAlert } from 'components'
 import { App as AppCap } from '@capacitor/app'
 import { useGlobalContext } from 'hooks/context'
 import { WithdrawalDetail } from 'views/Withdraw/WithdrawalDetail'
+import { EditInfoAccount } from 'views/EditInfoAccount'
 
 type Props = {
   basename: string
@@ -115,9 +120,17 @@ const App: React.FC<Props> = ({ basename }) => {
             <Route path='/withdraw-detail' element={<WithdrawalDetail />} />
             <Route path='/FAQ' element={<FAQ />} />
             <Route path='/panduan-mitra' element={<PanduanMitra />} />
+            <Route path='/acc-info' element={<InfoAccount />} />
+            <Route path='/edit-info-acc' element={<EditInfoAccount />} />
+            <Route path='/contact-us' element={<ContactUs />} />
+            <Route path='/password-update' element={<PasswordUpdate />} />
             <Route
               path='/choose-bank-account'
               element={<WithdrawChooseBank />}
+            />
+            <Route
+              path='/detail-transaction/:id_transaction'
+              element={<DetailTransaction />}
             />
             <Route
               path='/detail-kontruksi/:id_transaction'

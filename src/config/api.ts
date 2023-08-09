@@ -3,6 +3,10 @@ export const API = {
   OAUTH_LOGIN: '/oauth/token',
   DETAIL_LOGIN: '/api/mitra/detail',
 
+  TRANSACTION_HISTORY: '/api/merchant/transaction/completed',
+  TRANSACTION_HISTORY_DETAIL: '/api/transaction/mitra/detail',
+  TRANSACTION_HISTORY_ORDER: '/api/transaction/history',
+
   SUMMARY_HOME: '/api/tukang-sedot/home/summary',
   NEW_ORDER: '/api/tukang-sedot/home/order-waiting',
   NEW_ORDER_DETAIL: '/api/tukang-sedot/home/order-waiting/',
@@ -47,4 +51,20 @@ export const API = {
 
   FAQ_LIST: '/api/setting/faq/mitra',
   PANDUAN_MITRA: '/api/setting/panduan/mitra',
+
+  PROFILE: '/api/mitra/profile',
+  PROFILE_UPDATE_PIC: '/api/mitra/profile/update-photo',
+
+  PROVINCE_LIST: '/api/province/list',
+  CITY_LIST: '/api/city/list',
+  DISTRICT_LIST: '/api/district/list',
+  SUBDISTRICT_LIST: '/api/subdistrict/list',
+
+  EDIT_ACCOUNT: '/api/mitra/profile/update',
+
+  HELP_LIST: '/api/contact-us/list-subject',
+  HELP_CREATE: '/api/contact-us/create',
+
+  PASSWORD_UPDATE: '/api/mitra/profile/update-password',
+  PASSWORD_RESET: '/api/v2/users/pin/forgot',
 }
