@@ -65,5 +65,6 @@ export const API = {
   HELP_LIST: '/api/contact-us/list-subject',
   HELP_CREATE: '/api/contact-us/create',
 
-  PASSWORD_UPDATE: '/api/users/profile/update-password',
+  PASSWORD_UPDATE: '/api/mitra/profile/update-password',
+  PASSWORD_RESET: '/api/v2/users/pin/forgot',
 }

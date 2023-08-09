@@ -74,7 +74,7 @@ export const MENU_PROFILE = [
   {
     label: 'Ubah Password',
     icon: images.ic_profile_changepass,
-    to: '',
+    to: '/password-update',
   },
   {
     label: 'Tentang Aplikasi',

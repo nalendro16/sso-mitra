@@ -31,6 +31,7 @@ import {
   InfoAccount,
   DetailTransaction,
   ContactUs,
+  PasswordUpdate,
 } from 'views'
 import { isLogin } from 'utils/auth'
 import { ModalAlert } from 'components'
@@ -122,6 +123,7 @@ const App: React.FC<Props> = ({ basename }) => {
             <Route path='/acc-info' element={<InfoAccount />} />
             <Route path='/edit-info-acc' element={<EditInfoAccount />} />
             <Route path='/contact-us' element={<ContactUs />} />
+            <Route path='/password-update' element={<PasswordUpdate />} />
             <Route
               path='/choose-bank-account'
               element={<WithdrawChooseBank />}
