@@ -1,4 +1,6 @@
 import clsx from 'clsx'
+import { StorageKey } from 'config/storage'
+import { LocalStorage } from 'utils'
 
 interface CardSedotScheduleProps {
   className?: string
@@ -14,6 +16,7 @@ interface CardSedotScheduleProps {
     district?: string
     city?: string
     province?: string
+    completed_at?: string
   }
   onClick: () => void
 }
@@ -23,6 +26,7 @@ export const CardSedotSchedule: React.FC<CardSedotScheduleProps> = ({
   data,
   onClick,
 }) => {
+  const storage = new LocalStorage()
   return (
     <div
       className={clsx(
@@ -36,7 +40,7 @@ export const CardSedotSchedule: React.FC<CardSedotScheduleProps> = ({
       {history && (
         <div className='flex justify-between mb-2'>
           <div className='text-neutral-30 text-sm'>
-            {data?.time_by_admin || '13 Juni 2023'}
+            {data?.completed_at || '13 Juni 2023'}
           </div>
           <div className='text-primary-darker font-bold'>
             {data?.id_transaction || '#D8FF2FDG'}
@@ -45,7 +49,9 @@ export const CardSedotSchedule: React.FC<CardSedotScheduleProps> = ({
       )}
       <div className='flex justify-between mb-2'>
         <div className='text-primary-base'>
-          {'Layanan sedot '}
+          {storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
+            ? ''
+            : 'Layanan sedot '}
           <span className='text-primary-darker font-bold'>
             {data?.name || 'Rumah'}
           </span>
@@ -53,7 +59,7 @@ export const CardSedotSchedule: React.FC<CardSedotScheduleProps> = ({
 
         {!history && (
           <div className='text-primary-darker font-bold'>
-            {data?.time_by_admin || '13 Juni 2023'}
+            {data?.completed_at || '13 Juni 2023'}
           </div>
         )}
       </div>

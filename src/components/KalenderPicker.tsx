@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react'
 import { DayPicker } from 'react-day-picker'
 import { id } from 'date-fns/locale'
-import { format } from 'date-fns'
 
 interface KalenderPickerProps {
   onChangeSelected: (e: any) => void

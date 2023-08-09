@@ -113,7 +113,9 @@ export const NewOrder: React.FC<NewOrderProps> = ({
               <Skeleton width={180} height={20} />
             ) : (
               <div>
-                {'Layanan sedot '}
+                {storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
+                  ? 'Layanan renovasi '
+                  : 'Layanan sedot '}
                 <span className='text-primary-darker font-bold'>
                   {dataDetail?.name}
                 </span>

@@ -4,8 +4,9 @@ import { ProfileItem } from 'components'
 import { API } from 'config/api'
 import { StorageKey } from 'config/storage'
 import { useGlobalContext } from 'hooks/context'
-import { usePost } from 'hooks/useRequest'
+import { useGet, usePost } from 'hooks/useRequest'
 import React, { useEffect, useState } from 'react'
+import Skeleton from 'react-loading-skeleton'
 import { useNavigate } from 'react-router-dom'
 import { LocalStorage } from 'utils'
 import { MENU_PROFILE } from 'utils/dumy'
@@ -17,6 +18,7 @@ export const Profile: React.FC = () => {
   const [logout, postLogout] = usePost({ isLoading: false })
   const [upperMenu, setUpperMenu] = useState<any>()
   const [bottomMenu, setBottomMenu] = useState<any>()
+  const [dataProfile, getProfile] = useGet({ isLoading: false })
 
   useEffect(() => {
     const { data } = logout
@@ -26,6 +28,10 @@ export const Profile: React.FC = () => {
       // window.location.reload()
     }
   }, [logout])
+
+  useEffect(() => {
+    getProfile.getRequest(API.PROFILE)
+  }, [])
 
   useEffect(() => {
     let tmpUpper: any = []
@@ -76,20 +82,47 @@ export const Profile: React.FC = () => {
       className={`bg-no-repeat bg-cover bg-center z-10 min-h-screen pb-20 bg-white top-0 left-0 w-full absolute bg-[url('/src/assets/images/ic_banner_order.png')] px-4 mt-[1rem]`}
     >
       <div className='font-bold text-center mb-12 text-lg mt-2'>{'Akun'}</div>
-      <img
-        src={images.ic_user}
-        alt=''
-        className='rounded-full h-20 w-20 mx-auto mb-6'
-      />
-      <div className='text-center mb-2'>{'Rafi Ramdhani'}</div>
-      <div className='text-center mb-6'>{'rafiramdhani@space.com'}</div>
+      {dataProfile?.isLoading ? (
+        <div className='flex justify-center mb-2'>
+          <Skeleton width={80} height={80} circle className='mb-3' />
+        </div>
+      ) : (
+        <img
+          src={
+            dataProfile?.data?.result?.photo
+              ? dataProfile?.data?.result?.photo
+              : images.ic_user
+          }
+          alt=''
+          className='rounded-full h-20 w-20 mx-auto mb-6'
+        />
+      )}
+      {dataProfile?.isLoading ? (
+        <div className='flex justify-center mb-2'>
+          <Skeleton width={120} height={24} className='mx-auto' />
+        </div>
+      ) : (
+        <div className='text-center mb-2'>
+          {dataProfile?.data?.result?.name}
+        </div>
+      )}
+
+      {dataProfile?.isLoading ? (
+        <div className='flex justify-center mb-2'>
+          <Skeleton width={180} height={24} className='mx-auto' />
+        </div>
+      ) : (
+        <div className='text-center mb-6'>
+          {dataProfile?.data?.result?.email}
+        </div>
+      )}
 
       {upperMenu?.map((item: any, index: number) => (
         <ProfileItem
           key={index}
           className='mb-1'
           item={item}
-          onClick={() => console.log(item)}
+          onClick={() => navigate(item.to)}
         />
       ))}
 
