@@ -67,4 +67,8 @@ export const API = {
 
   PASSWORD_UPDATE: '/api/mitra/profile/update-password',
   PASSWORD_RESET: '/api/v2/users/pin/forgot',
+
+  ABOUT_APP: '/api/setting/about',
+  LIST_REVIEW: '/api/my-rating',
+  RATING_APP: '/api/setting/app-rating',
 }

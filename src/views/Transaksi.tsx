@@ -9,6 +9,7 @@ import { API } from 'config/api'
 import { usePost } from 'hooks/useRequest'
 import React, { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import Skeleton from 'react-loading-skeleton'
 import { useNavigate } from 'react-router-dom'
 
 export const Transaksi: React.FC = () => {
@@ -76,7 +77,20 @@ export const Transaksi: React.FC = () => {
         </div>
       </div>
       <AnimatedDiv className='mt-4'>
-        {listOrder?.length !== 0 ? (
+        {dataHistoryOrder?.isLoading ? (
+          Array.from([1, 2, 3, 4, 5]).map((item: any) => {
+            return (
+              <div
+                className='my-6 !h-fit flex-none outline-1 outline outline-neutral-10 rounded-lg px-4 py-3 shadow-md'
+                key={item}
+              >
+                <Skeleton width={80} height={20} />
+                <Skeleton width={250} height={20} className='my-2' />
+                <Skeleton width={200} height={30} />
+              </div>
+            )
+          })
+        ) : listOrder?.length !== 0 ? (
           <InfiniteScroll
             className='!will-change-scroll'
             dataLength={listOrder?.length}

@@ -79,7 +79,7 @@ export const MENU_PROFILE = [
   {
     label: 'Tentang Aplikasi',
     icon: images.ic_profile_about,
-    to: '',
+    to: '/about-app',
   },
   {
     label: 'FAQs',

@@ -38,7 +38,7 @@ export const Order: React.FC = () => {
   useEffect(() => {
     const { data } = dataHistoryOrder
     if (data?.status === 'success') {
-      setListOrder(data?.result?.data)
+      setListOrder(data?.result)
     }
   }, [dataHistoryOrder])
 
@@ -128,32 +128,6 @@ export const Order: React.FC = () => {
           />
         ))}
       </AnimatedDiv>
-
-      <div className='flex justify-between'>
-        <div className='text-primary-darker font-bold text-sm'>
-          Ulasan Pengguna
-        </div>
-      </div>
-
-      <div className='-mx-4 scroll-x pb-8'>
-        {USER_REVIEW?.map((item: any, index: number) => (
-          <div
-            className='shadow-xl my-6 !w-4/5 !h-fit flex-none px-4 rounded-lg py-4'
-            key={index}
-          >
-            <div className='flex justify-between items-center'>
-              <div className='text-primary-darker font-bold text-sm'>
-                {item.name}
-              </div>
-              <div className='text-xs text-neutral-20'>{item.time}</div>
-            </div>
-            <div className='justify-between flex items-center'>
-              <div className='line-clamp-2 mt-2'>{item.review_text}</div>
-              <img src={item.emoji} alt='' className='h-6' />
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   )
 }

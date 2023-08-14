@@ -10,6 +10,7 @@ import Skeleton from 'react-loading-skeleton'
 import { useGlobalContext } from 'hooks/context'
 import { LocalStorage } from 'utils'
 import { StorageKey } from 'config/storage'
+import { handleEmoji } from 'hooks/handleEmoji'
 
 export const Home: React.FC = () => {
   const storage = new LocalStorage()
@@ -18,9 +19,11 @@ export const Home: React.FC = () => {
   const [dataAcceptOrder, postAcceptOrder] = usePost({ isLoading: false })
   const [dataConfirmedOrder, getConfirmedOrder] = useGet({ isLoading: false })
   const [dataGetNewOrder, getNewOrder] = useGet({ isLoading: false })
+  const [dataReviews, getReviews] = useGet({ isLoading: false })
   const [dataSummary, setDataSummary] = useState<any>()
   const [dataNewOrder, setDataNewOrder] = useState<any>([])
   const [dataConfirmed, setDataConfirmed] = useState<any>([])
+  const [listReview, setListReview] = useState<any>([])
 
   useEffect(() => {
     const { data } = dataGetSummaryHome
@@ -54,8 +57,22 @@ export const Home: React.FC = () => {
   }, [dataConfirmedOrder])
 
   useEffect(() => {
+    const { data } = dataReviews
+    if (data?.status === 'success') {
+      setListReview(data?.result)
+    } else if (data?.status === 'fail') {
+      setListReview(null)
+    }
+
+    return () => {
+      setListReview(null)
+    }
+  }, [dataReviews])
+
+  useEffect(() => {
     let levelMitra = storage.getItem(StorageKey?.LEVEL)
     getSummaryHome.getRequest(API.SUMMARY_HOME)
+    getReviews.getRequest(API.LIST_REVIEW)
     if (levelMitra === 'Kontraktor') {
       getNewOrder.getRequest(API.NEW_ORDER_KONTRAKTOR)
       getConfirmedOrder.getRequest(API.CONFIRMED_ORDER_KONTRAKTOR)
@@ -80,6 +97,7 @@ export const Home: React.FC = () => {
     postAcceptOrder.getRequest(API.NEW_ORDER_CONFIRM, { id_transaction: id })
   }
 
+  console.log(dataConfirmed?.length, listReview?.length !== 0)
   return (
     <div className='-mt-[4rem]'>
       <div className='flex justify-between items-center'>
@@ -212,7 +230,6 @@ export const Home: React.FC = () => {
           <div className='text-primary-darker font-bold text-sm'>
             Orderan Terbaru
           </div>
-          {/* <div className='text-sm text-neutral-30'>Lihat Semua</div> */}
         </div>
 
         <div className='-mx-4 scroll-x pb-4'>
@@ -250,7 +267,7 @@ export const Home: React.FC = () => {
           )}
         </div>
 
-        {storage.getItem(StorageKey?.LEVEL) === 'Kontraktor' && (
+        {listReview?.length !== 0 && (
           <div className='flex justify-between'>
             <div className='text-primary-darker font-bold text-sm'>
               Ulasan Pengguna
@@ -259,24 +276,25 @@ export const Home: React.FC = () => {
         )}
 
         <div className='-mx-4 scroll-x pb-8'>
-          {storage.getItem(StorageKey?.LEVEL) === 'Kontraktor' &&
-            USER_REVIEW?.map((item: any, index: number) => (
-              <div
-                className='shadow-xl my-6 !w-4/5 !h-fit flex-none px-4 rounded-lg py-4'
-                key={index}
-              >
-                <div className='flex justify-between items-center'>
-                  <div className='text-primary-darker font-bold text-sm'>
-                    {item.name}
-                  </div>
-                  <div className='text-xs text-neutral-20'>{item.time}</div>
+          {listReview?.map((item: any, index: number) => (
+            <div
+              className='shadow-xl my-6 !w-4/5 !h-fit flex-none px-4 rounded-lg py-4'
+              key={index}
+            >
+              <div className='flex justify-between items-center'>
+                <div className='text-primary-darker font-bold text-sm'>
+                  {item?.name}
                 </div>
-                <div className='justify-between flex items-center'>
-                  <div className='line-clamp-2 mt-2'>{item.review_text}</div>
-                  <img src={item.emoji} alt='' className='h-6' />
+                <div className='text-xs text-neutral-20'>
+                  {item?.created_at}
                 </div>
               </div>
-            ))}
+              <div className='justify-between flex items-center'>
+                <div className='line-clamp-2 mt-2'>{item?.message}</div>
+                {handleEmoji(item?.rate)}
+              </div>
+            </div>
+          ))}
         </div>
       </AnimatedDiv>
     </div>
