@@ -40,6 +40,8 @@ export const API = {
   TRACKING_SEDOT_DETAIL_KONTRAKTOR: '/api/kontraktor/tracking/',
   SURVEY_RENOV: '/api/kontraktor/survey',
   RENOV_CONFIRM: '/api/kontraktor/confirm',
+  START_RENOV: '/api/kontraktor/start-work',
+  FINISH_RENOV: '/api/kontraktor/finish-work',
 
   RAB_LIST: '/api/kontraktor/rab/list',
   RAB_CREATE: '/api/kontraktor/rab/create',

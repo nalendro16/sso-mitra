@@ -169,9 +169,8 @@ export const Home: React.FC = () => {
                 : 'Kalender Sedot'}
             </div>
             <div className='text-xxs text-neutral-30 w-3/4 line-clamp-2'>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quod
-              placeat dolore, consequuntur esse eaque voluptate labore
-              reiciendis perspiciatis commodi nisi.
+              Lihat jadwal penyedotan dalam mode kalender, lihat jadwal harian,
+              bulanan, dst
             </div>
           </div>
           <img src={images.ic_stroke_right} alt='' className='w-3 h-4' />
@@ -187,9 +186,7 @@ export const Home: React.FC = () => {
               Panduan Mitra
             </div>
             <div className='text-xxs text-neutral-30 w-3/4 line-clamp-2'>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quod
-              placeat dolore, consequuntur esse eaque voluptate labore
-              reiciendis perspiciatis commodi nisi.
+              Panduan praktis untuk mitra terkait dengan SOP layanan Sajang
             </div>
           </div>
           <img src={images.ic_stroke_right} alt='' className='w-3 h-4' />

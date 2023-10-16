@@ -10,17 +10,13 @@ interface StepItemProps {
     step: number
   }
   className?: string
-  onLastStep: () => void
-  onPengajuanRAB: () => void
-  onFinalStep: () => void
+  handleStep: () => void
 }
 
 export const StepItem: React.FC<StepItemProps> = ({
   data,
   className,
-  onLastStep,
-  onPengajuanRAB,
-  onFinalStep,
+  handleStep,
 }) => {
   const storage = new LocalStorage()
   const handleStatus = (e: any) => {
@@ -34,20 +30,7 @@ export const StepItem: React.FC<StepItemProps> = ({
 
   return (
     <div>
-      <ul
-        className='StepProgress'
-        onClick={() =>
-          data.step === 4
-            ? onLastStep()
-            : data?.step === 5 &&
-              storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
-            ? onPengajuanRAB()
-            : data?.step > 5 &&
-              storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
-            ? onFinalStep()
-            : void 0
-        }
-      >
+      <ul className='StepProgress' onClick={handleStep}>
         <li className={`StepProgress-item ${handleStatus(data?.done)}`}>
           <strong className='text-primary-darker mb-1'>{data?.name}</strong>
           <p className='text-xs'>{data?.description}</p>

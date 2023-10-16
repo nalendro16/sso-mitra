@@ -20,6 +20,8 @@ export const TrackOrder: React.FC = () => {
   const [dataGetTracking, getTrackingData] = useGet({ isLoading: false })
   const [dataTrackingFinish, getTrackingFinish] = usePost({ isLoading: false })
   const [doneSurvey, postDoneSurvey] = usePost({ isLoading: false })
+  const [startRenov, postStartRenov] = usePost({ isLoading: false })
+  const [finishRenov, postFinishRenov] = usePost({ isLoading: false })
 
   useEffect(() => {
     let levelMitra = storage.getItem(StorageKey?.LEVEL)
@@ -67,6 +69,65 @@ export const TrackOrder: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataTrackingFinish])
 
+  useEffect(() => {
+    const { data } = startRenov
+    if (data?.status === 'success') {
+      openAlert({
+        messages: data?.messages || 'Pekerjaan sedang berlangsung',
+        showBtnClose: false,
+        isConfirm: true,
+      })
+      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL_KONTRAKTOR + id)
+    } else if (data?.status === 'fail') {
+      openAlert({
+        messages: data?.messages,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startRenov])
+
+  useEffect(() => {
+    const { data } = finishRenov
+    if (data?.status === 'success') {
+      openAlert({
+        messages: data?.messages || 'Pekerjaan berhasil terselesaikan',
+        showBtnClose: false,
+        isConfirm: true,
+      })
+      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL_KONTRAKTOR + id)
+    } else if (data?.status === 'fail') {
+      openAlert({
+        messages: data?.messages,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finishRenov])
+
+  const handleStepData = (datas: number) => {
+    switch (datas) {
+      case 4:
+        return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
+          ? handleConfirmRenov()
+          : handleLastStep()
+      case 5:
+        return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
+          ? navigate(
+              `/detail-kontruksi-rab/${dataOrderDetail?.id_transaction_renovasi}/${dataOrderDetail?.id_transaction}`
+            )
+          : handleLastStep()
+      case 6:
+        return navigate(
+          `/detail-kontruksi-wait/${dataOrderDetail?.id_transaction}`
+        )
+      case 7:
+        return handleStartWork()
+      case 8:
+        return handleFinishWork()
+      default:
+        return void 0
+    }
+  }
+
   const handleLastStep = () => {
     openAlert({
       messages: 'Apakah seluruh pekerjaan sudah selesai?',
@@ -91,7 +152,39 @@ export const TrackOrder: React.FC = () => {
       btnCloseText: 'Tidak',
       callback: (e: any) => {
         if (e.isConfirm) {
-          postDoneSurvey.getRequest(API.SURVEY_RENOV, {
+          postDoneSurvey.getRequest(API.START_RENOV, {
+            id_transaction: dataOrderDetail?.id_transaction,
+          })
+        }
+      },
+    })
+  }
+
+  const handleFinishWork = () => {
+    openAlert({
+      messages: 'Pastikan seluruh pekerjaan sudah selesai?',
+      isConfirm: true,
+      btnConfirmText: 'Ya',
+      btnCloseText: 'Tidak',
+      callback: (e: any) => {
+        if (e.isConfirm) {
+          postFinishRenov.getRequest(API.FINISH_RENOV, {
+            id_transaction: dataOrderDetail?.id_transaction,
+          })
+        }
+      },
+    })
+  }
+
+  const handleStartWork = () => {
+    openAlert({
+      messages: 'Apakah pekerjaan akan dimulai?',
+      isConfirm: true,
+      btnConfirmText: 'Ya',
+      btnCloseText: 'Tidak',
+      callback: (e: any) => {
+        if (e.isConfirm) {
+          postStartRenov.getRequest(API.START_RENOV, {
             id_transaction: dataOrderDetail?.id_transaction,
           })
         }
@@ -212,18 +305,13 @@ export const TrackOrder: React.FC = () => {
             <StepItem
               data={item}
               key={index}
-              onLastStep={() =>
-                storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
-                  ? handleConfirmRenov()
-                  : handleLastStep()
-              }
-              onPengajuanRAB={() =>
-                navigate(
-                  `/detail-kontruksi-rab/${dataOrderDetail?.id_transaction_renovasi}/${dataOrderDetail?.id_transaction}`
+              className='bg-yellow'
+              handleStep={() =>
+                handleStepData(
+                  item.step === dataGetTracking?.data?.result?.step
+                    ? item.step
+                    : 0
                 )
-              }
-              onFinalStep={() =>
-                navigate(`/detail-kontruksi/${dataOrderDetail?.id_transaction}`)
               }
             />
           ))}

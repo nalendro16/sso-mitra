@@ -33,6 +33,7 @@ import {
   ContactUs,
   PasswordUpdate,
   AboutApp,
+  DetailKontruksiLayananWait,
 } from 'views'
 import { isLogin } from 'utils/auth'
 import { ModalAlert } from 'components'
@@ -133,6 +134,10 @@ const App: React.FC<Props> = ({ basename }) => {
             <Route
               path='/detail-transaction/:id_transaction'
               element={<DetailTransaction />}
+            />
+            <Route
+              path='/detail-kontruksi-wait/:id_transaction'
+              element={<DetailKontruksiLayananWait />}
             />
             <Route
               path='/detail-kontruksi/:id_transaction'
