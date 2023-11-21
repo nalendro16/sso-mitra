@@ -11,3 +11,5 @@ export const authKey = env('REACT_APP_ACCESS_TOKEN', 'access_token')
 export const clientID = env('REACT_APP_CLIENT_CREDENTIAL_ID', 1)
 
 export const clientSecret = env('REACT_APP_CLIENT_CREDENTIAL_SECRET', '')
+
+export const googleMapKey = env('REACT_APP_GOOGLE_MAP_KEY', '')

@@ -1,3 +1,4 @@
+import { BackgroundGeolocationPlugin } from '@capacitor-community/background-geolocation'
 import images from 'assets/images'
 import { useState, useEffect } from 'react'
 import { AnimatedDiv, Header, StepItem } from 'components'
@@ -9,19 +10,30 @@ import { useGlobalContext } from 'hooks/context'
 import { LocalStorage } from 'utils'
 import { StorageKey } from 'config/storage'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
+import { Geolocation } from '@capacitor/geolocation'
+import { registerPlugin } from '@capacitor/core'
+const BackgroundGeolocation = registerPlugin<BackgroundGeolocationPlugin>(
+  'BackgroundGeolocation'
+)
 
 export const TrackOrder: React.FC = () => {
   const navigate = useNavigate()
   const storage = new LocalStorage()
-  const { openAlert } = useGlobalContext()
+  const { openAlert, setWatcherID, watcherID } = useGlobalContext()
   const { id } = useParams()
+  const [coor, setCoor] = useState<{ lat: number; long: number }>({
+    lat: 0,
+    long: 0,
+  })
   const [dataTracking, setDataTracking] = useState<any>([])
   const [dataOrderDetail, setDataOrderDetail] = useState<any>()
   const [dataGetTracking, getTrackingData] = useGet({ isLoading: false })
-  const [dataTrackingFinish, getTrackingFinish] = usePost({ isLoading: false })
+  const [dataTrackingFinish, getTrackingFinish] = usePost({ isLoading: false }) //finish sedot
   const [doneSurvey, postDoneSurvey] = usePost({ isLoading: false })
   const [startRenov, postStartRenov] = usePost({ isLoading: false })
-  const [finishRenov, postFinishRenov] = usePost({ isLoading: false })
+  const [finishRenov, postFinishRenov] = usePost({ isLoading: false }) // finish renov
+  const [startTracking, postStartTracking] = usePost({ isLoading: false })
+  let levelsMitra = storage.getItem(StorageKey?.LEVEL)
 
   useEffect(() => {
     let levelMitra = storage.getItem(StorageKey?.LEVEL)
@@ -30,6 +42,7 @@ export const TrackOrder: React.FC = () => {
     } else {
       getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL + id)
     }
+    printCurrentPosition()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
@@ -40,6 +53,19 @@ export const TrackOrder: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [doneSurvey])
+
+  useEffect(() => {
+    const { data } = startTracking
+    if (data?.status === 'success') {
+      navigate(`/tracking-maps/${id}`)
+      storage.setItem(StorageKey.ID_TRANSACTION, id)
+    } else if (data?.status === 'fail') {
+      openAlert({
+        messages: data?.messages,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startTracking])
 
   useEffect(() => {
     const { data } = dataGetTracking
@@ -60,6 +86,9 @@ export const TrackOrder: React.FC = () => {
         showBtnClose: false,
         isConfirm: true,
       })
+      storage.remove(StorageKey.ID_TRANSACTION)
+      BackgroundGeolocation.removeWatcher({ id: watcherID })
+      setWatcherID('')
       getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL + id)
     } else if (data?.status === 'fail') {
       openAlert({
@@ -94,6 +123,9 @@ export const TrackOrder: React.FC = () => {
         showBtnClose: false,
         isConfirm: true,
       })
+      storage.remove(StorageKey.ID_TRANSACTION)
+      BackgroundGeolocation.removeWatcher({ id: watcherID })
+      setWatcherID('')
       getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL_KONTRAKTOR + id)
     } else if (data?.status === 'fail') {
       openAlert({
@@ -104,11 +136,10 @@ export const TrackOrder: React.FC = () => {
   }, [finishRenov])
 
   const handleStepData = (datas: number) => {
+    console.log('click', datas)
     switch (datas) {
       case 4:
-        return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
-          ? handleConfirmRenov()
-          : handleLastStep()
+        return handleStartTracking()
       case 5:
         return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
           ? navigate(
@@ -144,22 +175,6 @@ export const TrackOrder: React.FC = () => {
     })
   }
 
-  const handleConfirmRenov = () => {
-    openAlert({
-      messages: 'Pastikan anda sudah melakukan survey lokasi?',
-      isConfirm: true,
-      btnConfirmText: 'Ya',
-      btnCloseText: 'Tidak',
-      callback: (e: any) => {
-        if (e.isConfirm) {
-          postDoneSurvey.getRequest(API.START_RENOV, {
-            id_transaction: dataOrderDetail?.id_transaction,
-          })
-        }
-      },
-    })
-  }
-
   const handleFinishWork = () => {
     openAlert({
       messages: 'Pastikan seluruh pekerjaan sudah selesai?',
@@ -187,6 +202,44 @@ export const TrackOrder: React.FC = () => {
           postStartRenov.getRequest(API.START_RENOV, {
             id_transaction: dataOrderDetail?.id_transaction,
           })
+        }
+      },
+    })
+  }
+
+  const printCurrentPosition = async () => {
+    const coordinates = await Geolocation.getCurrentPosition()
+
+    setCoor({
+      lat: coordinates?.coords?.latitude,
+      long: coordinates?.coords?.longitude,
+    })
+  }
+
+  const handleStartTracking = () => {
+    let levelMitra = storage.getItem(StorageKey?.LEVEL)
+
+    openAlert({
+      title: 'Mulai Pekerjaan',
+      messages: 'Mulai perjalanan dan pengerjaan ke lokasi Customer?',
+      isConfirm: true,
+      btnConfirmText: 'Oke',
+      btnCloseText: 'Nanti',
+      callback: (e: any) => {
+        if (e.isConfirm) {
+          if (levelMitra === 'Kontraktor') {
+            postStartTracking.getRequest(API.START_TRACKING_RENOV, {
+              id_transaction: id,
+              latitude: coor.lat,
+              longitude: coor.long,
+            })
+          } else {
+            postStartTracking.getRequest(API.START_TRACKING_SEDOT, {
+              id_transaction: id,
+              latitude: coor.lat,
+              longitude: coor.long,
+            })
+          }
         }
       },
     })
@@ -308,7 +361,11 @@ export const TrackOrder: React.FC = () => {
               className='bg-yellow'
               handleStep={() =>
                 handleStepData(
-                  item.step === dataGetTracking?.data?.result?.step
+                  levelsMitra === 'Kontraktor' &&
+                    item.step === dataGetTracking?.data?.result?.step
+                    ? dataGetTracking?.data?.result?.step
+                    : item.step ===
+                      dataGetTracking?.data?.result?.clickable_step
                     ? item.step
                     : 0
                 )

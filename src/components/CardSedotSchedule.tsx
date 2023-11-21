@@ -39,9 +39,7 @@ export const CardSedotSchedule: React.FC<CardSedotScheduleProps> = ({
     >
       {history && (
         <div className='flex justify-between mb-2'>
-          <div className='text-neutral-30 text-sm'>
-            {data?.completed_at || '13 Juni 2023'}
-          </div>
+          <div className='text-neutral-30 text-sm'>{data?.completed_at}</div>
           <div className='text-primary-darker font-bold'>
             {data?.id_transaction || '#D8FF2FDG'}
           </div>
@@ -59,7 +57,7 @@ export const CardSedotSchedule: React.FC<CardSedotScheduleProps> = ({
 
         {!history && (
           <div className='text-primary-darker font-bold'>
-            {data?.completed_at || '13 Juni 2023'}
+            {data?.completed_at}
           </div>
         )}
       </div>

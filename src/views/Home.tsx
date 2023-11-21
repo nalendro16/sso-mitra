@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react'
 import images from 'assets/images'
 import { AnimatedDiv, CardSedotSchedule, NewOrder } from 'components'
-import { USER_REVIEW } from 'utils/dumy'
 import { useNavigate } from 'react-router-dom'
 import { useGet, usePost } from 'hooks/useRequest'
 import { API } from 'config/api'
@@ -97,7 +96,6 @@ export const Home: React.FC = () => {
     postAcceptOrder.getRequest(API.NEW_ORDER_CONFIRM, { id_transaction: id })
   }
 
-  console.log(dataConfirmed?.length, listReview?.length !== 0)
   return (
     <div className='-mt-[4rem]'>
       <div className='flex justify-between items-center'>
@@ -191,6 +189,26 @@ export const Home: React.FC = () => {
           </div>
           <img src={images.ic_stroke_right} alt='' className='w-3 h-4' />
         </div>
+
+        {storage.getItem(StorageKey?.LEVEL) === 'Tukang Sedot' && (
+          <div
+            className='flex items-center justify-between gap-4 my-4 mt-6 mx-4'
+            onClick={() => navigate('/armada-list')}
+          >
+            <div className='h-10 w-12 flex justify-center'>
+              <img src={images.ic_choose_armada} alt='' className='h-6 w-6' />
+            </div>
+            <div>
+              <div className='text-primary-darker font-bold text-sm'>
+                Armada Saya
+              </div>
+              <div className='text-xxs text-neutral-30 w-3/4 line-clamp-2'>
+                Manajemen armada kendaraan untuk rekues sedot atau sedot rutin
+              </div>
+            </div>
+            <img src={images.ic_stroke_right} alt='' className='w-3 h-4' />
+          </div>
+        )}
 
         <div className='text-primary-darker font-bold text-sm mb-4'>
           Jadwal Sedot

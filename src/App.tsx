@@ -34,9 +34,12 @@ import {
   PasswordUpdate,
   AboutApp,
   DetailKontruksiLayananWait,
+  ArmadaList,
+  CreateArmada,
+  EditArmada,
 } from 'views'
 import { isLogin } from 'utils/auth'
-import { ModalAlert } from 'components'
+import { MapTracking, ModalAlert } from 'components'
 import { App as AppCap } from '@capacitor/app'
 import { useGlobalContext } from 'hooks/context'
 import { WithdrawalDetail } from 'views/Withdraw/WithdrawalDetail'
@@ -127,6 +130,16 @@ const App: React.FC<Props> = ({ basename }) => {
             <Route path='/contact-us' element={<ContactUs />} />
             <Route path='/password-update' element={<PasswordUpdate />} />
             <Route path='/about-app' element={<AboutApp />} />
+            <Route path='/armada-list' element={<ArmadaList />} />
+            <Route path='/armada-create' element={<CreateArmada />} />
+            <Route
+              path='/armada-edit/:id_accommodation'
+              element={<EditArmada />}
+            />
+            <Route
+              path='/tracking-maps/:id_transaction'
+              element={<MapTracking />}
+            />
             <Route
               path='/choose-bank-account'
               element={<WithdrawChooseBank />}

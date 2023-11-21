@@ -120,7 +120,7 @@ export const Transaksi: React.FC = () => {
             <img
               src={images.bg_no_product}
               alt=''
-              className='mx-auto w-60 h-60'
+              className='mx-auto w-60 h-52'
             />
             <p className='text-sm font-semi-bold text-center text-primary-base mt-4'>
               Belum ada pesanan yang terselesaikan

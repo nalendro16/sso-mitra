@@ -42,6 +42,7 @@ export const API = {
   RENOV_CONFIRM: '/api/kontraktor/confirm',
   START_RENOV: '/api/kontraktor/start-work',
   FINISH_RENOV: '/api/kontraktor/finish-work',
+  START_SURVEY: '/api/kontraktor/survey',
 
   RAB_LIST: '/api/kontraktor/rab/list',
   RAB_CREATE: '/api/kontraktor/rab/create',
@@ -73,4 +74,16 @@ export const API = {
   ABOUT_APP: '/api/setting/about',
   LIST_REVIEW: '/api/my-rating',
   RATING_APP: '/api/setting/app-rating',
+
+  START_TRACKING_SEDOT: '/api/tukang-sedot/tracking-sedot/live/start',
+  START_TRACKING_RENOV: '/api/kontraktor/tracking/live/start',
+
+  UPDATE_TRACKING_SEDOT: '/api/tukang-sedot/tracking-sedot/live/update',
+  UPDATE_TRACKING_RENOV: '/api/kontraktor/tracking/live/update',
+
+  LIST_ARMADA: '/api/accommodation',
+  CREATE_ARMADA: '/api/accommodation/create',
+  EDIT_ARMADA: '/api/accommodation/update',
+  DETAIL_ARMADA: '/api/accommodation/detail',
+  DELETE_ARMADA: '/api/accommodation/delete',
 }
