@@ -82,8 +82,19 @@ export const API = {
   UPDATE_TRACKING_RENOV: '/api/kontraktor/tracking/live/update',
 
   LIST_ARMADA: '/api/accommodation',
+  LIST_ARMADA_MODAL: '/api/tukang-sedot/accommodation',
   CREATE_ARMADA: '/api/accommodation/create',
   EDIT_ARMADA: '/api/accommodation/update',
   DETAIL_ARMADA: '/api/accommodation/detail',
   DELETE_ARMADA: '/api/accommodation/delete',
+
+  FINISH_SURVEY: '/api/tukang-sedot/finish-survey',
+  START_SEDOT: '/api/tukang-sedot/start-work',
+  PERHITUNGAN_BIAYA_SEDOT: '/api/tukang-sedot/perhitungan-biaya',
+
+  LIST_DUMPING: '/api/dumping',
+  DETAIL_DUMPING: '/api/dumping/detail',
+  CREATE_DUMPING: '/api/dumping/create',
+  HISTORY_DUMPING: '/api/dumping/riwayat',
+  DETAIL_DUMPING_RIWAYAT: '/api/dumping/riwayat/detail',
 }

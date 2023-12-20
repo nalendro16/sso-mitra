@@ -69,7 +69,7 @@ export const DetailTransaction: React.FC = () => {
       </div>
       {dataDetailTrans?.isLoading ? (
         <div>
-          <Skeleton height={18} width={360} />
+          <Skeleton height={18} width={160} />
           <Skeleton height={18} width={200} />
         </div>
       ) : (
@@ -106,6 +106,49 @@ export const DetailTransaction: React.FC = () => {
       ) : (
         <div className='text-xs'>{detailTrans?.payment}</div>
       )}
+
+      <div className='text-primary-darker text-sm font-semibold mt-3'>
+        Vendor
+      </div>
+      {dataDetailTrans?.isLoading ? (
+        <Skeleton height={18} width={60} />
+      ) : (
+        <div className='text-xs'>
+          {detailTrans?.outlet?.name?.outlet_name ?? '-'}
+        </div>
+      )}
+
+      <div className='text-primary-darker text-sm font-semibold mt-3'>
+        Armada
+      </div>
+      {dataDetailTrans?.isLoading ? (
+        <Skeleton height={18} width={60} />
+      ) : (
+        <div className='text-xs'>{detailTrans?.accommodation?.name ?? '-'}</div>
+      )}
+
+      <div className='text-primary-darker text-sm font-semibold mt-3'>
+        No. Kendaraan
+      </div>
+      {dataDetailTrans?.isLoading ? (
+        <Skeleton height={18} width={60} />
+      ) : (
+        <div className='text-xs'>
+          {detailTrans?.accommodation?.number_accommodation ?? '-'}
+        </div>
+      )}
+
+      <div className='text-primary-darker text-sm font-semibold mt-3'>
+        Volume Sedot
+      </div>
+      {dataDetailTrans?.isLoading ? (
+        <Skeleton height={18} width={60} />
+      ) : (
+        <div className='text-xs'>
+          {detailTrans?.accommodation?.capacity ?? 0}L
+        </div>
+      )}
+
       <div className='border-b border-b-neutral-10 my-4' />
 
       {dataDetailTrans?.isLoading ? (

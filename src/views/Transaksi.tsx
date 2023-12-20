@@ -19,12 +19,19 @@ export const Transaksi: React.FC = () => {
   const [hasMore, setHasMore] = useState(false)
   const [isRefresh, setRefresh] = useState(false)
   const navigate = useNavigate()
+  const [listTransaksi, setTransaksi] = useState<any>([])
   const [dataHistoryOrder, postHistoryOrder] = usePost({ isLoading: false })
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     postHistoryOrder.getRequest(API.TRANSACTION_HISTORY)
   }, [])
+
+  useEffect(() => {
+    if (search) {
+      setTransaksi(searchByName(search))
+    }
+  }, [search])
 
   useEffect(() => {
     const { data } = dataHistoryOrder
@@ -43,6 +50,18 @@ export const Transaksi: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataHistoryOrder])
+
+  const searchByName = (searchTerm: string) => {
+    searchTerm = searchTerm.toLowerCase()
+
+    const filteredData = listOrder.filter(
+      (item: any) =>
+        item.transaction_receipt_number.toLowerCase().includes(searchTerm) ||
+        item.name.toLowerCase().includes(searchTerm)
+    )
+
+    return filteredData
+  }
 
   const onRefresh = async () => {
     setRefresh(true)
@@ -103,17 +122,29 @@ export const Transaksi: React.FC = () => {
             pullDownToRefreshContent={<RefreshContent type='pull' />}
             releaseToRefreshContent={<RefreshContent type='release' />}
           >
-            {listOrder?.map((items: any, index: number) => (
-              <HistoryTransactionCard
-                data={items}
-                key={index}
-                onClick={() =>
-                  navigate(
-                    `/detail-transaction/${items.transaction_receipt_number}`
-                  )
-                }
-              />
-            ))}
+            {search
+              ? listTransaksi?.map((items: any, index: number) => (
+                  <HistoryTransactionCard
+                    data={items}
+                    key={index}
+                    onClick={() =>
+                      navigate(
+                        `/detail-transaction/${items.transaction_receipt_number}`
+                      )
+                    }
+                  />
+                ))
+              : listOrder?.map((items: any, index: number) => (
+                  <HistoryTransactionCard
+                    data={items}
+                    key={index}
+                    onClick={() =>
+                      navigate(
+                        `/detail-transaction/${items.transaction_receipt_number}`
+                      )
+                    }
+                  />
+                ))}
           </InfiniteScroll>
         ) : (
           <div className='my-auto mx-4 mt-8 h-screen'>

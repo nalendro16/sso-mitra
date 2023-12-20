@@ -37,6 +37,11 @@ import {
   ArmadaList,
   CreateArmada,
   EditArmada,
+  VolumeOrder,
+  Dumping,
+  DumpingDetail,
+  DumpingSubmit,
+  DumpingDetailHistory,
 } from 'views'
 import { isLogin } from 'utils/auth'
 import { MapTracking, ModalAlert } from 'components'
@@ -132,6 +137,20 @@ const App: React.FC<Props> = ({ basename }) => {
             <Route path='/about-app' element={<AboutApp />} />
             <Route path='/armada-list' element={<ArmadaList />} />
             <Route path='/armada-create' element={<CreateArmada />} />
+            <Route path='/dumping-list' element={<Dumping />} />
+            <Route
+              path='/dumping-detail-history/:id_iplt'
+              element={<DumpingDetailHistory />}
+            />
+            <Route
+              path='/dumping-detail/:id_accommodation'
+              element={<DumpingDetail />}
+            />
+            <Route path='/dumping-create' element={<DumpingSubmit />} />
+            <Route
+              path='/volume-order/:id_transaction'
+              element={<VolumeOrder />}
+            />
             <Route
               path='/armada-edit/:id_accommodation'
               element={<EditArmada />}

@@ -84,6 +84,7 @@ export const ArmadaList: React.FC = () => {
           <ArmadaCard
             data={item}
             key={index}
+            onClick={() => void 0}
             onClickDots={() => handleDotsClick(item.id_accommodation)}
             onDelete={() => {
               item.status_accommodation === 1

@@ -229,7 +229,7 @@ export const MapTracking: React.FC = () => {
               longitude: coordinates.coords?.longitude,
             })
           } else {
-            getTrackingFinish.getRequest(API.TRACKING_FINISH_SEDOT, {
+            getTrackingFinish.getRequest(API.FINISH_SURVEY, {
               id_transaction: id_transaction,
             })
           }

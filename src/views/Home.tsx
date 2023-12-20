@@ -1,7 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import images from 'assets/images'
-import { AnimatedDiv, CardSedotSchedule, NewOrder } from 'components'
+import {
+  AnimatedDiv,
+  CardSedotSchedule,
+  ModalArmada,
+  NewOrder,
+} from 'components'
 import { useNavigate } from 'react-router-dom'
 import { useGet, usePost } from 'hooks/useRequest'
 import { API } from 'config/api'
@@ -16,6 +21,8 @@ export const Home: React.FC = () => {
   const { openAlert } = useGlobalContext()
   const [dataGetSummaryHome, getSummaryHome] = useGet({ isLoading: false })
   const [dataAcceptOrder, postAcceptOrder] = usePost({ isLoading: false })
+  const [selectedID, setSelectedID] = useState<number>()
+  const [openModalArmada, setOpenModalArmada] = useState<boolean>(false)
   const [dataConfirmedOrder, getConfirmedOrder] = useGet({ isLoading: false })
   const [dataGetNewOrder, getNewOrder] = useGet({ isLoading: false })
   const [dataReviews, getReviews] = useGet({ isLoading: false })
@@ -91,10 +98,6 @@ export const Home: React.FC = () => {
   }, [dataAcceptOrder])
 
   const navigate = useNavigate()
-
-  const handleAcceptOrder = (id: number) => {
-    postAcceptOrder.getRequest(API.NEW_ORDER_CONFIRM, { id_transaction: id })
-  }
 
   return (
     <div className='-mt-[4rem]'>
@@ -179,7 +182,7 @@ export const Home: React.FC = () => {
           onClick={() => navigate('/panduan-mitra')}
         >
           <img src={images.ic_home_panduanmitra} alt='' className='h-10 w-12' />
-          <div>
+          <div className='w-full'>
             <div className='text-primary-darker font-bold text-sm'>
               Panduan Mitra
             </div>
@@ -193,12 +196,36 @@ export const Home: React.FC = () => {
         {storage.getItem(StorageKey?.LEVEL) === 'Tukang Sedot' && (
           <div
             className='flex items-center justify-between gap-4 my-4 mt-6 mx-4'
+            onClick={() => navigate('/dumping-list')}
+          >
+            <div className='h-10 w-12 flex justify-center'>
+              <img src={images.ic_dumping} alt='' className='h-10 w-12' />
+            </div>
+            <div className='w-full'>
+              <div className='text-primary-darker font-bold text-sm'>
+                Dumping
+              </div>
+              <div className='text-xxs text-neutral-30 w-3/4 line-clamp-2'>
+                Manajemen pengelolaan limbah sedot dan buang
+              </div>
+            </div>
+            <img src={images.ic_stroke_right} alt='' className='w-3 h-4' />
+          </div>
+        )}
+
+        {storage.getItem(StorageKey?.LEVEL) === 'Tukang Sedot' && (
+          <div
+            className='flex items-center justify-between gap-4 my-4 mt-6 mx-4'
             onClick={() => navigate('/armada-list')}
           >
             <div className='h-10 w-12 flex justify-center'>
-              <img src={images.ic_choose_armada} alt='' className='h-6 w-6' />
+              <img
+                src={images.ic_choose_armada}
+                alt=''
+                className='h-6 w-6 ml-2'
+              />
             </div>
-            <div>
+            <div className='w-full'>
               <div className='text-primary-darker font-bold text-sm'>
                 Armada Saya
               </div>
@@ -269,7 +296,10 @@ export const Home: React.FC = () => {
                 key={item.id_transaction}
                 isLoading={dataAcceptOrder.isLoading}
                 onCancelOrder={() => console.log('order canceled')}
-                onAcceptOrder={() => handleAcceptOrder(item.id_transaction)}
+                onAcceptOrder={() => {
+                  setSelectedID(item.id_transaction)
+                  setOpenModalArmada(true)
+                }}
                 onAcceptOrderKontraktor={() =>
                   navigate(`/detail-kontruksi-order/${item.id_transaction}`)
                 }
@@ -312,6 +342,18 @@ export const Home: React.FC = () => {
           ))}
         </div>
       </AnimatedDiv>
+
+      <ModalArmada
+        onHide={() => setOpenModalArmada(false)}
+        isOpen={openModalArmada}
+        onClick={(e) => {
+          setOpenModalArmada(false)
+          postAcceptOrder.getRequest(API.NEW_ORDER_CONFIRM, {
+            id_accommodation: e,
+            id_transaction: selectedID,
+          })
+        }}
+      />
     </div>
   )
 }

@@ -1,13 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { AnimatedDiv, CardSedotSchedule, NewOrder } from 'components'
+import {
+  AnimatedDiv,
+  CardSedotSchedule,
+  ModalArmada,
+  NewOrder,
+} from 'components'
 import { API } from 'config/api'
 import { useGlobalContext } from 'hooks/context'
 import { useGet, usePost } from 'hooks/useRequest'
 import { useState, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useNavigate } from 'react-router-dom'
-import { USER_REVIEW } from 'utils/dumy'
-
 export const Order: React.FC = () => {
   const navigate = useNavigate()
   const { openAlert } = useGlobalContext()
@@ -15,6 +18,8 @@ export const Order: React.FC = () => {
   const [dataGetNewOrder, getNewOrder] = useGet({ isLoading: false })
   const [dataAcceptOrder, postAcceptOrder] = usePost({ isLoading: false })
   const [dataHistoryOrder, postHistoryOrder] = usePost({ isLoading: false })
+  const [selectedID, setSelectedID] = useState<number>()
+  const [openModalArmada, setOpenModalArmada] = useState<boolean>(false)
   const [dataNewOrder, setDataNewOrder] = useState<any>([])
 
   useEffect(() => {
@@ -50,10 +55,6 @@ export const Order: React.FC = () => {
       openAlert({ messages: data?.messages })
     }
   }, [dataAcceptOrder])
-
-  const handleAcceptOrder = (id: number) => {
-    postAcceptOrder.getRequest(API.NEW_ORDER_CONFIRM, { id_transaction: id })
-  }
 
   return (
     <div className='mb-4'>
@@ -99,7 +100,10 @@ export const Order: React.FC = () => {
                 key={index}
                 isLoading={dataAcceptOrder.isLoading}
                 onCancelOrder={() => console.log('order canceled')}
-                onAcceptOrder={() => handleAcceptOrder(item.id_transaction)}
+                onAcceptOrder={() => {
+                  setSelectedID(item.id_transaction)
+                  setOpenModalArmada(true)
+                }}
                 onAcceptOrderKontraktor={() =>
                   navigate(`/detail-kontruksi-order/${item.id_transaction}`)
                 }
@@ -128,6 +132,17 @@ export const Order: React.FC = () => {
           />
         ))}
       </AnimatedDiv>
+      <ModalArmada
+        onHide={() => setOpenModalArmada(false)}
+        isOpen={openModalArmada}
+        onClick={(e) => {
+          setOpenModalArmada(false)
+          postAcceptOrder.getRequest(API.NEW_ORDER_CONFIRM, {
+            id_accommodation: e,
+            id_transaction: selectedID,
+          })
+        }}
+      />
     </div>
   )
 }

@@ -33,3 +33,8 @@ export { DetailKontruksiLayananWait } from './VendorView/DetailKontruksiLatyanan
 export { ArmadaList } from './Armada/ArmadaList'
 export { EditArmada } from './Armada/EditArmada'
 export { CreateArmada } from './Armada/CreateArmada'
+export { VolumeOrder } from './RequestSedot/VolumeOrder'
+export { Dumping } from './Dumping/Dumping'
+export { DumpingDetail } from './Dumping/DumpingDetail'
+export { DumpingSubmit } from './Dumping/DumpingSubmit'
+export { DumpingDetailHistory } from './Dumping/DumpingDetailHistory'

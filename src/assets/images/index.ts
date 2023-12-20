@@ -94,6 +94,7 @@ import ic_check_warning from './ic_check_warning.png'
 import ic_armada_total from './ic_armada_total.png'
 import ic_armada_capacity from './ic_armada_capacity.png'
 import ic_armada_plat from './ic_armada_plat.png'
+import ic_dumping from './ic_dumping.png'
 
 const images = {
   ic_user,
@@ -192,6 +193,7 @@ const images = {
   ic_armada_total,
   ic_armada_capacity,
   ic_armada_plat,
+  ic_dumping,
 }
 
 export default images

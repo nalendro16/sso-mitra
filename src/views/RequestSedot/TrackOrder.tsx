@@ -29,7 +29,7 @@ export const TrackOrder: React.FC = () => {
   const [dataOrderDetail, setDataOrderDetail] = useState<any>()
   const [dataGetTracking, getTrackingData] = useGet({ isLoading: false })
   const [dataTrackingFinish, getTrackingFinish] = usePost({ isLoading: false }) //finish sedot
-  const [doneSurvey, postDoneSurvey] = usePost({ isLoading: false })
+  const [dataStartSedot, postStartSedot] = usePost({ isLoading: false })
   const [startRenov, postStartRenov] = usePost({ isLoading: false })
   const [finishRenov, postFinishRenov] = usePost({ isLoading: false }) // finish renov
   const [startTracking, postStartTracking] = usePost({ isLoading: false })
@@ -47,12 +47,12 @@ export const TrackOrder: React.FC = () => {
   }, [id])
 
   useEffect(() => {
-    const { data } = doneSurvey
+    const { data } = dataStartSedot
     if (data?.status === 'success') {
-      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL_KONTRAKTOR + id)
+      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL + id)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [doneSurvey])
+  }, [dataStartSedot])
 
   useEffect(() => {
     const { data } = startTracking
@@ -136,20 +136,25 @@ export const TrackOrder: React.FC = () => {
   }, [finishRenov])
 
   const handleStepData = (datas: number) => {
-    console.log('click', datas)
     switch (datas) {
-      case 4:
+      case 3:
         return handleStartTracking()
+      case 4:
+        return handleStartWork()
       case 5:
         return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
           ? navigate(
               `/detail-kontruksi-rab/${dataOrderDetail?.id_transaction_renovasi}/${dataOrderDetail?.id_transaction}`
             )
-          : handleLastStep()
+          : navigate(`/volume-order/${dataOrderDetail?.id_transaction}`, {
+              state: dataOrderDetail,
+            })
       case 6:
-        return navigate(
-          `/detail-kontruksi-wait/${dataOrderDetail?.id_transaction}`
-        )
+        return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
+          ? navigate(
+              `/detail-kontruksi-wait/${dataOrderDetail?.id_transaction}`
+            )
+          : console.log(datas)
       case 7:
         return handleStartWork()
       case 8:
@@ -159,21 +164,21 @@ export const TrackOrder: React.FC = () => {
     }
   }
 
-  const handleLastStep = () => {
-    openAlert({
-      messages: 'Apakah seluruh pekerjaan sudah selesai?',
-      isConfirm: true,
-      btnConfirmText: 'Ya',
-      btnCloseText: 'Tidak',
-      callback: (e: any) => {
-        if (e.isConfirm) {
-          getTrackingFinish.getRequest(API.TRACKING_FINISH_SEDOT, {
-            id_transaction: dataOrderDetail?.id_transaction,
-          })
-        }
-      },
-    })
-  }
+  // const handleLastStep = () => {
+  //   openAlert({
+  //     messages: 'Apakah seluruh pekerjaan sudah selesai?',
+  //     isConfirm: true,
+  //     btnConfirmText: 'Ya',
+  //     btnCloseText: 'Tidak',
+  //     callback: (e: any) => {
+  //       if (e.isConfirm) {
+  //         getTrackingFinish.getRequest(API.TRACKING_FINISH_SEDOT, {
+  //           id_transaction: dataOrderDetail?.id_transaction,
+  //         })
+  //       }
+  //     },
+  //   })
+  // }
 
   const handleFinishWork = () => {
     openAlert({
@@ -192,6 +197,7 @@ export const TrackOrder: React.FC = () => {
   }
 
   const handleStartWork = () => {
+    let levelMitra = storage.getItem(StorageKey?.LEVEL)
     openAlert({
       messages: 'Apakah pekerjaan akan dimulai?',
       isConfirm: true,
@@ -199,9 +205,15 @@ export const TrackOrder: React.FC = () => {
       btnCloseText: 'Tidak',
       callback: (e: any) => {
         if (e.isConfirm) {
-          postStartRenov.getRequest(API.START_RENOV, {
-            id_transaction: dataOrderDetail?.id_transaction,
-          })
+          if (levelMitra === 'Kontraktor') {
+            postStartRenov.getRequest(API.START_RENOV, {
+              id_transaction: dataOrderDetail?.id_transaction,
+            })
+          } else {
+            postStartSedot.getRequest(API.START_SEDOT, {
+              id_transaction: dataOrderDetail?.id_transaction,
+            })
+          }
         }
       },
     })
