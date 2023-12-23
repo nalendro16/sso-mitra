@@ -1,6 +1,7 @@
 import images from 'assets/images'
 import { ArmadaCard, Header, RefreshContent, Spinner } from 'components'
 import { API } from 'config/api'
+import { el } from 'date-fns/locale'
 import { usePost } from 'hooks/useRequest'
 import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -19,7 +20,16 @@ export const Dumping: React.FC = () => {
   const [dataHistoryDumping, postHistoryDumping] = usePost({ isLoading: false })
   const [listDumping, setListDumping] = useState<any>([])
   const [listHistoryDumping, setListHistoryDumping] = useState<any>([])
-  const [search, setSearch] = useState<any>({
+  const [dataHistoryDumpingSearch, postHistoryDumpingSearch] = usePost({
+    isLoading: false,
+  })
+  const [listHistoryDumpingSearch, setListHistoryDumpingSearch] = useState<any>(
+    []
+  )
+  const [search, setSearch] = useState<{
+    status: string
+    number_dumping_iplt: string
+  }>({
     status: 'All',
     number_dumping_iplt: '',
   })
@@ -46,7 +56,20 @@ export const Dumping: React.FC = () => {
   }, [dataListDumping])
 
   useEffect(() => {
-    postHistoryDumping.getRequest(API.HISTORY_DUMPING, search)
+    let showedTime = setTimeout(() => {
+      if (search?.number_dumping_iplt || search?.status !== 'All') {
+        postHistoryDumpingSearch.getRequest(API.HISTORY_DUMPING, search)
+        setPage(1)
+        console.log('hit search')
+      } else {
+        console.log('hit biasa')
+        postHistoryDumping.getRequest(API.HISTORY_DUMPING)
+      }
+    }, 1000)
+
+    return () => {
+      clearInterval(showedTime)
+    }
   }, [search])
 
   useEffect(() => {
@@ -70,8 +93,28 @@ export const Dumping: React.FC = () => {
   }, [dataHistoryDumping])
 
   useEffect(() => {
+    const { data } = dataHistoryDumpingSearch
+    if (data?.status === 'success') {
+      if (data?.result?.next_page_url) {
+        setHasMore(true)
+        setPage(page + 1)
+      } else {
+        setHasMore(false)
+      }
+      setListHistoryDumpingSearch(data?.result?.data)
+    } else if (data?.status === 'fail') {
+      console.log('error', data?.messages)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataHistoryDumpingSearch])
+
+  useEffect(() => {
     const controller = new AbortController()
-    postListDumping.getRequest(API.LIST_DUMPING)
+    postListDumping.getRequest(API.LIST_DUMPING, {
+      search,
+      pagination_total_row: 10,
+      page: page,
+    })
     return () => controller.abort()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -89,16 +132,18 @@ export const Dumping: React.FC = () => {
   }
 
   const onLoadMore = () => {
-    postHistoryDumping.getRequest(API.HISTORY_DUMPING, {
-      search,
-      pagination_total_row: 10,
-      page: page,
-    })
+    postHistoryDumping.getRequest(API.HISTORY_DUMPING, search)
   }
 
   const onRefresh = () => {
     setRefresh(true)
     setPage(1)
+    if (search?.number_dumping_iplt || search.status !== 'All') {
+      postHistoryDumpingSearch.getRequest(API.HISTORY_DUMPING, search)
+      setPage(1)
+    } else {
+      postHistoryDumping.getRequest(API.HISTORY_DUMPING, search)
+    }
   }
 
   return (
@@ -161,38 +206,71 @@ export const Dumping: React.FC = () => {
       </div>
 
       <div className=''>
-        {listHistoryDumping?.length !== 0 && (
+        {(listHistoryDumping?.length !== 0 ||
+          listHistoryDumpingSearch?.length !== 0) && (
           <div className='text-primary-darker text-sm font-semibold mt-3'>
             Riwayat
           </div>
         )}
-        <InfiniteScroll
-          className='!will-change-scroll px-4 pb-4'
-          dataLength={listHistoryDumping?.length}
-          loader={<Spinner className='mx-auto my-6' />}
-          hasMore={hasMore}
-          next={onLoadMore}
-          refreshFunction={onRefresh}
-          pullDownToRefresh
-          pullDownToRefreshThreshold={150}
-          pullDownToRefreshContent={<RefreshContent type='pull' />}
-        >
-          {listHistoryDumping?.map((item: any, index: number) => (
-            <ArmadaCard
-              key={index}
-              isDumping
-              simpleCard
-              data={item}
-              onClickDots={() => void 0}
-              onDelete={() => void 0}
-              onEdit={() => void 0}
-              onClick={() =>
-                navigate(`/dumping-detail-history/${item.id_iplt}`)
-              }
-              onDumpingClick={() => console.log('dumping now')}
-            />
-          ))}
-        </InfiniteScroll>
+        {search?.number_dumping_iplt || search.status !== 'All' ? (
+          <InfiniteScroll
+            className='!will-change-scroll px-4 pb-4'
+            dataLength={listHistoryDumpingSearch?.length}
+            loader={<Spinner className='mx-auto my-6' />}
+            hasMore={hasMore}
+            next={onLoadMore}
+            refreshFunction={onRefresh}
+            pullDownToRefresh
+            pullDownToRefreshThreshold={150}
+            pullDownToRefreshContent={<RefreshContent type='pull' />}
+          >
+            {listHistoryDumpingSearch?.map((item: any, index: number) => (
+              <ArmadaCard
+                key={index}
+                isDumping
+                simpleCard
+                data={item}
+                onClickDots={() => void 0}
+                onDelete={() => void 0}
+                onEdit={() => void 0}
+                onClick={() =>
+                  navigate(`/dumping-detail-history/${item.id_iplt}`)
+                }
+                onDumpingClick={() => console.log('dumping now')}
+              />
+            ))}
+          </InfiniteScroll>
+        ) : (
+          (search?.number_dumping_iplt || search.status === 'All') && (
+            <InfiniteScroll
+              className='!will-change-scroll px-4 pb-4'
+              dataLength={listHistoryDumping?.length}
+              loader={<Spinner className='mx-auto my-6' />}
+              hasMore={hasMore}
+              next={onLoadMore}
+              refreshFunction={onRefresh}
+              pullDownToRefresh
+              pullDownToRefreshThreshold={150}
+              pullDownToRefreshContent={<RefreshContent type='pull' />}
+            >
+              {listHistoryDumping?.map((item: any, index: number) => (
+                <ArmadaCard
+                  key={index}
+                  isDumping
+                  simpleCard
+                  data={item}
+                  onClickDots={() => void 0}
+                  onDelete={() => void 0}
+                  onEdit={() => void 0}
+                  onClick={() =>
+                    navigate(`/dumping-detail-history/${item.id_iplt}`)
+                  }
+                  onDumpingClick={() => console.log('dumping now')}
+                />
+              ))}
+            </InfiniteScroll>
+          )
+        )}
       </div>
     </div>
   )
