@@ -1,10 +1,18 @@
 import images from 'assets/images'
-import { Button, Header, Input, InputCurrency, Modal } from 'components'
+import {
+  Button,
+  Header,
+  Input,
+  InputCurrency,
+  InputSelect,
+  Modal,
+} from 'components'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useGet, usePost } from 'hooks/useRequest'
 import { API } from 'config/api'
 import { useGlobalContext } from 'hooks/context'
+import { STANDAR_SEPTICTANK } from 'utils/dumy'
 
 export const RancanganAnggaranBiaya: React.FC = () => {
   const navigate = useNavigate()
@@ -19,6 +27,8 @@ export const RancanganAnggaranBiaya: React.FC = () => {
   const [dataAddMaterial, postAddMaterial] = usePost({ isLoading: false })
   const [dataDeleteMaterial, postDeleteMaterial] = useGet({ isLoading: false })
   const [dataEditMaterial, postEditMaterial] = usePost({ isLoading: false })
+  const [standard_septic_tank, setStandard_septic_tank] = useState<string>('')
+  const [selectedStandardSepticTank, setSelectedSepticTank] = useState<any>()
 
   const [dataSubmitRAB, postSubmitRAB] = usePost({ isLoading: false })
 
@@ -213,6 +223,21 @@ export const RancanganAnggaranBiaya: React.FC = () => {
       />
 
       <div>
+        <InputSelect
+          className='mb-4 '
+          label='Standar Septic Tank'
+          classNameLabel='mb-4 !font-semi-bold !text-secondary'
+          placeholder='Pilih Standar Septic Tank'
+          noOptionsMessage={() => 'Tidak dapat menunjukan data'}
+          value={selectedStandardSepticTank}
+          options={STANDAR_SEPTICTANK}
+          isSearchable
+          onChange={(e) => {
+            setSelectedSepticTank(e)
+            setStandard_septic_tank(e.value)
+          }}
+        />
+
         <div className='mb-4 font-semi-bold'>{'Material'}</div>
         {dataRAB?.material.map((item: any, index: number) => (
           <div className='w-full' key={index}>
@@ -253,7 +278,7 @@ export const RancanganAnggaranBiaya: React.FC = () => {
         </div>
       </div>
 
-      <div className='mt-4'>
+      <div className='mt-4 mb-28'>
         <div className='mb-4 font-semi-bold'>{'Jasa'}</div>
         {dataRAB?.jasa.map((item: any, index: number) => (
           <div className='w-full' key={index}>
@@ -294,7 +319,7 @@ export const RancanganAnggaranBiaya: React.FC = () => {
         </div>
       </div>
 
-      <div className='w-full -ml-4 fixed bottom-0 max-w-content p-4 pt-6 rounded-t-xl top-shadow'>
+      <div className='w-full -ml-4 fixed bottom-0 max-w-content p-4 pt-6 rounded-t-xl top-shadow bg-white'>
         <div className='mb-4 text-sm'>
           Baca mengenai layanan Bangun dan Renovasi sebelum melanjutkan.
           <span className='font-semi-bold text-primary-base'>
@@ -309,7 +334,7 @@ export const RancanganAnggaranBiaya: React.FC = () => {
             </div>
           </div>
           <Button
-            disabled={dataSubmitRAB?.isLoading}
+            disabled={dataSubmitRAB?.isLoading || !standard_septic_tank}
             onClick={() =>
               openAlert({
                 title: 'Apakah anda yakin ingin melanjutkan?',
@@ -320,6 +345,7 @@ export const RancanganAnggaranBiaya: React.FC = () => {
                   if (e.isConfirm) {
                     postSubmitRAB.getRequest(API.CONFIRM_RAB, {
                       id_transaction: id,
+                      standard_septic_tank: standard_septic_tank,
                     })
                   }
                 },

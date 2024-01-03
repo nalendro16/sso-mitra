@@ -105,6 +105,11 @@ export const BANNER_HOME = [
   },
 ]
 
+export const STANDAR_SEPTICTANK = [
+  { label: 'Leher Angsa', value: 'Leher Angsa' },
+  { label: 'Standard', value: 'Standard' },
+]
+
 export const ACTIVITY_HOME = [
   {
     title: 'Sosialisasi Toilet Bersih',

@@ -140,7 +140,8 @@ export const TrackOrder: React.FC = () => {
       case 3:
         return handleStartTracking()
       case 4:
-        return handleStartWork()
+        // return handleStartWork()
+        return handleStartTracking()
       case 5:
         return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
           ? navigate(

@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 const FILTER_DUMPING = [
   { label: 'All', value: 'All' },
   { label: 'On Progress', value: 'Pending' },
-  { label: 'Reject', value: 'Reject' },
+  { label: 'Reject', value: 'Rejected' },
   { label: 'Riwayat', value: 'Completed' },
 ]
 
