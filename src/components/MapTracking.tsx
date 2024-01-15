@@ -213,10 +213,7 @@ export const MapTracking: React.FC = () => {
 
     const coordinates = await Geolocation.getCurrentPosition()
     openAlert({
-      messages:
-        levelMitra === 'Kontraktor'
-          ? 'Apakah survey sudah selesai?'
-          : 'Apakah seluruh pekerjaan sudah selesai?',
+      messages: 'Apakah survey sudah selesai?',
       isConfirm: true,
       btnConfirmText: 'Ya',
       btnCloseText: 'Tidak',
@@ -295,11 +292,7 @@ export const MapTracking: React.FC = () => {
       </div>
       <Button
         className='btn-primary !w-full mt-4'
-        label={
-          storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
-            ? 'Penyelesaian Survey'
-            : 'Penyelesaian Penyedotan'
-        }
+        label={'Penyelesaian Survey'}
         onClick={() => handleLastStep()}
         // isLoading={dataConfirmDelivery?.isLoading}
       />

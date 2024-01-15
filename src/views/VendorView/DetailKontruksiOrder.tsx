@@ -120,7 +120,7 @@ export const DetailKontruksiOrder: React.FC = () => {
         </div>
       </div>
 
-      <div className='mb-3'>
+      <div className='mb-28'>
         <div className='font-semi-bold text-primary-darker mb-2 text-sm'>
           Lampiran Foto
         </div>

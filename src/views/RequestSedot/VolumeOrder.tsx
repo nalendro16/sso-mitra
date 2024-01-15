@@ -95,12 +95,12 @@ export const VolumeOrder: React.FC = () => {
       </div>
 
       <div className='text-sm text-primary-darker font-semi-bold mb-2'>
-        Kapasitas
+        Volume yang disedot
       </div>
       <div className='flex bg-neutral-10 items-center rounded-md'>
         <input
           type='number'
-          placeholder='Masukan Kapasitas Tangki'
+          placeholder='Masukan volume yang akan disedot'
           className='resize-none placeholder:text-sm appearance-none focus:outline-none w-full rounded-md bg-neutral-10 focus:border-active p-3'
           name='volume_sedot_wc'
           value={form.volume_sedot_wc}
