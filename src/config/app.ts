@@ -1,6 +1,6 @@
 import { env } from '../utils'
 
-export const appName = env('REACT_APP_TITLE', 'Sajang Apps')
+export const appName = env('REACT_APP_TITLE', 'Mitra Satu Pintu')
 
 export const debug = env('REACT_APP_DEBUG', false)
 

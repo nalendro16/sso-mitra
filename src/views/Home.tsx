@@ -102,7 +102,9 @@ export const Home: React.FC = () => {
   return (
     <div className='-mt-[4rem]'>
       <div className='flex justify-between items-center'>
-        <div className='text-primary-darker font-bold text-lg'>Sajang App</div>
+        <div className='text-primary-darker font-bold text-lg'>
+          Mitra Satu Pintu App
+        </div>
         <img src={images.ic_notification_blue} alt='' className='h-6 w-5' />
       </div>
 
@@ -187,7 +189,8 @@ export const Home: React.FC = () => {
               Panduan Mitra
             </div>
             <div className='text-xxs text-neutral-30 w-3/4 line-clamp-2'>
-              Panduan praktis untuk mitra terkait dengan SOP layanan Sajang
+              Panduan praktis untuk mitra terkait dengan SOP layanan Mitra Satu
+              Pintu
             </div>
           </div>
           <img src={images.ic_stroke_right} alt='' className='w-3 h-4' />

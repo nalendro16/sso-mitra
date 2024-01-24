@@ -89,7 +89,7 @@ const App: React.FC<Props> = ({ basename }) => {
         window.history.back()
       } else {
         openAlert({
-          messages: 'Tutup Aplikasi Sajang?',
+          messages: 'Tutup Aplikasi Mitra Satu Pintu?',
           isConfirm: true,
           btnConfirmText: 'Ya',
           btnCloseText: 'Tidak',

@@ -1,12 +1,12 @@
-import { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
   appId: 'com.sajang.mitra',
-  appName: 'Sajang Mitra',
+  appName: 'Mitra Satu Pintu',
   webDir: 'build',
   server: {
-    androidScheme: 'https'
-  }
-};
+    androidScheme: 'https',
+  },
+}
 
-export default config;
+export default config
