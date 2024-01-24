@@ -9,7 +9,7 @@ export const PaymentConfirmed: React.FC = () => {
   return (
     <div className='h-full w-full absolute top-0 left-0 bg-gradient-header flex flex-col px-4 pt-16 pb-8'>
       <div className='text-lg text-center text-white font-semi-bold my-4'>
-        Sajang Sanitation App
+        Mitra Satu Pintu App
       </div>
       <img
         src={images.bg_payment_success}
@@ -21,7 +21,7 @@ export const PaymentConfirmed: React.FC = () => {
       </div>
       <p className='mb-4 text-sm text-center text-white'>
         Hore, order kamu berhasil dikonfirmasi. Selanjutnya, silahkan menunggu
-        petugas SAJANG yang akan datang menuju alamat kamu.
+        petugas Mitra Satu Pintu yang akan datang menuju alamat kamu.
       </p>
 
       <div className='flex justify-between text-sm text-white mb-4'>

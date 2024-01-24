@@ -1,8 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import images from 'assets/images'
-import { AnimatedDiv, CardSedotSchedule, NewOrder } from 'components'
-import { USER_REVIEW } from 'utils/dumy'
+import {
+  AnimatedDiv,
+  CardSedotSchedule,
+  ModalArmada,
+  NewOrder,
+} from 'components'
 import { useNavigate } from 'react-router-dom'
 import { useGet, usePost } from 'hooks/useRequest'
 import { API } from 'config/api'
@@ -10,17 +14,22 @@ import Skeleton from 'react-loading-skeleton'
 import { useGlobalContext } from 'hooks/context'
 import { LocalStorage } from 'utils'
 import { StorageKey } from 'config/storage'
+import { handleEmoji } from 'hooks/handleEmoji'
 
 export const Home: React.FC = () => {
   const storage = new LocalStorage()
   const { openAlert } = useGlobalContext()
   const [dataGetSummaryHome, getSummaryHome] = useGet({ isLoading: false })
   const [dataAcceptOrder, postAcceptOrder] = usePost({ isLoading: false })
+  const [selectedID, setSelectedID] = useState<number>()
+  const [openModalArmada, setOpenModalArmada] = useState<boolean>(false)
   const [dataConfirmedOrder, getConfirmedOrder] = useGet({ isLoading: false })
   const [dataGetNewOrder, getNewOrder] = useGet({ isLoading: false })
+  const [dataReviews, getReviews] = useGet({ isLoading: false })
   const [dataSummary, setDataSummary] = useState<any>()
   const [dataNewOrder, setDataNewOrder] = useState<any>([])
   const [dataConfirmed, setDataConfirmed] = useState<any>([])
+  const [listReview, setListReview] = useState<any>([])
 
   useEffect(() => {
     const { data } = dataGetSummaryHome
@@ -54,8 +63,22 @@ export const Home: React.FC = () => {
   }, [dataConfirmedOrder])
 
   useEffect(() => {
+    const { data } = dataReviews
+    if (data?.status === 'success') {
+      setListReview(data?.result)
+    } else if (data?.status === 'fail') {
+      setListReview(null)
+    }
+
+    return () => {
+      setListReview(null)
+    }
+  }, [dataReviews])
+
+  useEffect(() => {
     let levelMitra = storage.getItem(StorageKey?.LEVEL)
     getSummaryHome.getRequest(API.SUMMARY_HOME)
+    getReviews.getRequest(API.LIST_REVIEW)
     if (levelMitra === 'Kontraktor') {
       getNewOrder.getRequest(API.NEW_ORDER_KONTRAKTOR)
       getConfirmedOrder.getRequest(API.CONFIRMED_ORDER_KONTRAKTOR)
@@ -76,14 +99,12 @@ export const Home: React.FC = () => {
 
   const navigate = useNavigate()
 
-  const handleAcceptOrder = (id: number) => {
-    postAcceptOrder.getRequest(API.NEW_ORDER_CONFIRM, { id_transaction: id })
-  }
-
   return (
     <div className='-mt-[4rem]'>
       <div className='flex justify-between items-center'>
-        <div className='text-primary-darker font-bold text-lg'>Sajang App</div>
+        <div className='text-primary-darker font-bold text-lg'>
+          Mitra Satu Pintu App
+        </div>
         <img src={images.ic_notification_blue} alt='' className='h-6 w-5' />
       </div>
 
@@ -151,9 +172,8 @@ export const Home: React.FC = () => {
                 : 'Kalender Sedot'}
             </div>
             <div className='text-xxs text-neutral-30 w-3/4 line-clamp-2'>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quod
-              placeat dolore, consequuntur esse eaque voluptate labore
-              reiciendis perspiciatis commodi nisi.
+              Lihat jadwal penyedotan dalam mode kalender, lihat jadwal harian,
+              bulanan, dst
             </div>
           </div>
           <img src={images.ic_stroke_right} alt='' className='w-3 h-4' />
@@ -164,18 +184,61 @@ export const Home: React.FC = () => {
           onClick={() => navigate('/panduan-mitra')}
         >
           <img src={images.ic_home_panduanmitra} alt='' className='h-10 w-12' />
-          <div>
+          <div className='w-full'>
             <div className='text-primary-darker font-bold text-sm'>
               Panduan Mitra
             </div>
             <div className='text-xxs text-neutral-30 w-3/4 line-clamp-2'>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quod
-              placeat dolore, consequuntur esse eaque voluptate labore
-              reiciendis perspiciatis commodi nisi.
+              Panduan praktis untuk mitra terkait dengan SOP layanan Mitra Satu
+              Pintu
             </div>
           </div>
           <img src={images.ic_stroke_right} alt='' className='w-3 h-4' />
         </div>
+
+        {storage.getItem(StorageKey?.LEVEL) === 'Tukang Sedot' && (
+          <div
+            className='flex items-center justify-between gap-4 my-4 mt-6 mx-4'
+            onClick={() => navigate('/dumping-list')}
+          >
+            <div className='h-10 w-12 flex justify-center'>
+              <img src={images.ic_dumping} alt='' className='h-10 w-12' />
+            </div>
+            <div className='w-full'>
+              <div className='text-primary-darker font-bold text-sm'>
+                Dumping
+              </div>
+              <div className='text-xxs text-neutral-30 w-3/4 line-clamp-2'>
+                Manajemen pengelolaan limbah sedot dan buang
+              </div>
+            </div>
+            <img src={images.ic_stroke_right} alt='' className='w-3 h-4' />
+          </div>
+        )}
+
+        {storage.getItem(StorageKey?.LEVEL) === 'Tukang Sedot' && (
+          <div
+            className='flex items-center justify-between gap-4 my-4 mt-6 mx-4'
+            onClick={() => navigate('/armada-list')}
+          >
+            <div className='h-10 w-12 flex justify-center'>
+              <img
+                src={images.ic_choose_armada}
+                alt=''
+                className='h-6 w-6 ml-2'
+              />
+            </div>
+            <div className='w-full'>
+              <div className='text-primary-darker font-bold text-sm'>
+                Armada Saya
+              </div>
+              <div className='text-xxs text-neutral-30 w-3/4 line-clamp-2'>
+                Manajemen armada kendaraan untuk rekues sedot atau sedot rutin
+              </div>
+            </div>
+            <img src={images.ic_stroke_right} alt='' className='w-3 h-4' />
+          </div>
+        )}
 
         <div className='text-primary-darker font-bold text-sm mb-4'>
           Jadwal Sedot
@@ -212,7 +275,6 @@ export const Home: React.FC = () => {
           <div className='text-primary-darker font-bold text-sm'>
             Orderan Terbaru
           </div>
-          {/* <div className='text-sm text-neutral-30'>Lihat Semua</div> */}
         </div>
 
         <div className='-mx-4 scroll-x pb-4'>
@@ -237,7 +299,10 @@ export const Home: React.FC = () => {
                 key={item.id_transaction}
                 isLoading={dataAcceptOrder.isLoading}
                 onCancelOrder={() => console.log('order canceled')}
-                onAcceptOrder={() => handleAcceptOrder(item.id_transaction)}
+                onAcceptOrder={() => {
+                  setSelectedID(item.id_transaction)
+                  setOpenModalArmada(true)
+                }}
                 onAcceptOrderKontraktor={() =>
                   navigate(`/detail-kontruksi-order/${item.id_transaction}`)
                 }
@@ -250,7 +315,7 @@ export const Home: React.FC = () => {
           )}
         </div>
 
-        {storage.getItem(StorageKey?.LEVEL) === 'Kontraktor' && (
+        {listReview?.length !== 0 && (
           <div className='flex justify-between'>
             <div className='text-primary-darker font-bold text-sm'>
               Ulasan Pengguna
@@ -259,26 +324,39 @@ export const Home: React.FC = () => {
         )}
 
         <div className='-mx-4 scroll-x pb-8'>
-          {storage.getItem(StorageKey?.LEVEL) === 'Kontraktor' &&
-            USER_REVIEW?.map((item: any, index: number) => (
-              <div
-                className='shadow-xl my-6 !w-4/5 !h-fit flex-none px-4 rounded-lg py-4'
-                key={index}
-              >
-                <div className='flex justify-between items-center'>
-                  <div className='text-primary-darker font-bold text-sm'>
-                    {item.name}
-                  </div>
-                  <div className='text-xs text-neutral-20'>{item.time}</div>
+          {listReview?.map((item: any, index: number) => (
+            <div
+              className='shadow-xl my-6 !w-4/5 !h-fit flex-none px-4 rounded-lg py-4'
+              key={index}
+            >
+              <div className='flex justify-between items-center'>
+                <div className='text-primary-darker font-bold text-sm'>
+                  {item?.name}
                 </div>
-                <div className='justify-between flex items-center'>
-                  <div className='line-clamp-2 mt-2'>{item.review_text}</div>
-                  <img src={item.emoji} alt='' className='h-6' />
+                <div className='text-xs text-neutral-20'>
+                  {item?.created_at}
                 </div>
               </div>
-            ))}
+              <div className='justify-between flex items-center'>
+                <div className='line-clamp-2 mt-2'>{item?.message}</div>
+                {handleEmoji(item?.rate)}
+              </div>
+            </div>
+          ))}
         </div>
       </AnimatedDiv>
+
+      <ModalArmada
+        onHide={() => setOpenModalArmada(false)}
+        isOpen={openModalArmada}
+        onClick={(e) => {
+          setOpenModalArmada(false)
+          postAcceptOrder.getRequest(API.NEW_ORDER_CONFIRM, {
+            id_accommodation: e,
+            id_transaction: selectedID,
+          })
+        }}
+      />
     </div>
   )
 }

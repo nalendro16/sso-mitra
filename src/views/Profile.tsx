@@ -18,6 +18,8 @@ export const Profile: React.FC = () => {
   const [logout, postLogout] = usePost({ isLoading: false })
   const [upperMenu, setUpperMenu] = useState<any>()
   const [bottomMenu, setBottomMenu] = useState<any>()
+
+  const [dataRatingApp, getRatingApp] = useGet({ isLoading: false })
   const [dataProfile, getProfile] = useGet({ isLoading: false })
 
   useEffect(() => {
@@ -31,6 +33,7 @@ export const Profile: React.FC = () => {
 
   useEffect(() => {
     getProfile.getRequest(API.PROFILE)
+    getRatingApp.getRequest(API.RATING_APP)
   }, [])
 
   useEffect(() => {
@@ -45,7 +48,7 @@ export const Profile: React.FC = () => {
         return setBottomMenu([...tmpBottom])
       }
     })
-  }, [])
+  }, [MENU_PROFILE])
 
   useEffect(() => {
     const { data } = logout
@@ -76,6 +79,8 @@ export const Profile: React.FC = () => {
       },
     })
   }
+
+  const onMarketPlace = (url: string) => [window.open(url)]
 
   return (
     <div
@@ -133,7 +138,23 @@ export const Profile: React.FC = () => {
           key={index}
           className='mb-1'
           item={item}
-          onClick={() => navigate(item.to)}
+          onClick={() =>
+            item?.label === 'FAQ'
+              ? navigate(item.to)
+              : openAlert({
+                  title: item?.label,
+                  messages:
+                    'Beri kami pendapatmu tentang aplikasi ini di Google Playstore',
+                  isConfirm: true,
+                  btnConfirmText: 'Ayo',
+                  btnCloseText: 'Nanti',
+                  callback: (e: any) => {
+                    if (e.isConfirm) {
+                      onMarketPlace(dataRatingApp?.data?.result?.value)
+                    }
+                  },
+                })
+          }
         />
       ))}
 

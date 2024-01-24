@@ -87,6 +87,14 @@ import ic_close_black from './ic_close_black.png'
 import ic_image_upload from './ic_image_upload.png'
 import ic_upload_photo from './ic_upload_photo.png'
 import ic_pdfplaceholder from './ic_pdfplaceholder.png'
+import ic_mobil from './ic_mobil.png'
+import ic_customer_home from './ic_customer_home.png'
+import ic_choose_armada from './ic_choose_armada.png'
+import ic_check_warning from './ic_check_warning.png'
+import ic_armada_total from './ic_armada_total.png'
+import ic_armada_capacity from './ic_armada_capacity.png'
+import ic_armada_plat from './ic_armada_plat.png'
+import ic_dumping from './ic_dumping.png'
 
 const images = {
   ic_user,
@@ -178,6 +186,14 @@ const images = {
   ic_image_upload,
   ic_upload_photo,
   ic_pdfplaceholder,
+  ic_customer_home,
+  ic_mobil,
+  ic_choose_armada,
+  ic_check_warning,
+  ic_armada_total,
+  ic_armada_capacity,
+  ic_armada_plat,
+  ic_dumping,
 }
 
 export default images

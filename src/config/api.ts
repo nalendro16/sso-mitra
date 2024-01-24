@@ -40,6 +40,9 @@ export const API = {
   TRACKING_SEDOT_DETAIL_KONTRAKTOR: '/api/kontraktor/tracking/',
   SURVEY_RENOV: '/api/kontraktor/survey',
   RENOV_CONFIRM: '/api/kontraktor/confirm',
+  START_RENOV: '/api/kontraktor/start-work',
+  FINISH_RENOV: '/api/kontraktor/finish-work',
+  START_SURVEY: '/api/kontraktor/survey',
 
   RAB_LIST: '/api/kontraktor/rab/list',
   RAB_CREATE: '/api/kontraktor/rab/create',
@@ -67,4 +70,31 @@ export const API = {
 
   PASSWORD_UPDATE: '/api/mitra/profile/update-password',
   PASSWORD_RESET: '/api/v2/users/pin/forgot',
+
+  ABOUT_APP: '/api/setting/about',
+  LIST_REVIEW: '/api/my-rating',
+  RATING_APP: '/api/setting/app-rating',
+
+  START_TRACKING_SEDOT: '/api/tukang-sedot/tracking-sedot/live/start',
+  START_TRACKING_RENOV: '/api/kontraktor/tracking/live/start',
+
+  UPDATE_TRACKING_SEDOT: '/api/tukang-sedot/tracking-sedot/live/update',
+  UPDATE_TRACKING_RENOV: '/api/kontraktor/tracking/live/update',
+
+  LIST_ARMADA: '/api/accommodation',
+  LIST_ARMADA_MODAL: '/api/tukang-sedot/accommodation',
+  CREATE_ARMADA: '/api/accommodation/create',
+  EDIT_ARMADA: '/api/accommodation/update',
+  DETAIL_ARMADA: '/api/accommodation/detail',
+  DELETE_ARMADA: '/api/accommodation/delete',
+
+  FINISH_SURVEY: '/api/tukang-sedot/finish-survey',
+  START_SEDOT: '/api/tukang-sedot/start-work',
+  PERHITUNGAN_BIAYA_SEDOT: '/api/tukang-sedot/perhitungan-biaya',
+
+  LIST_DUMPING: '/api/dumping',
+  DETAIL_DUMPING: '/api/dumping/detail',
+  CREATE_DUMPING: '/api/dumping/create',
+  HISTORY_DUMPING: '/api/dumping/riwayat',
+  DETAIL_DUMPING_RIWAYAT: '/api/dumping/riwayat/detail',
 }

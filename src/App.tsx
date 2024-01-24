@@ -32,9 +32,19 @@ import {
   DetailTransaction,
   ContactUs,
   PasswordUpdate,
+  AboutApp,
+  DetailKontruksiLayananWait,
+  ArmadaList,
+  CreateArmada,
+  EditArmada,
+  VolumeOrder,
+  Dumping,
+  DumpingDetail,
+  DumpingSubmit,
+  DumpingDetailHistory,
 } from 'views'
 import { isLogin } from 'utils/auth'
-import { ModalAlert } from 'components'
+import { MapTracking, ModalAlert } from 'components'
 import { App as AppCap } from '@capacitor/app'
 import { useGlobalContext } from 'hooks/context'
 import { WithdrawalDetail } from 'views/Withdraw/WithdrawalDetail'
@@ -79,7 +89,7 @@ const App: React.FC<Props> = ({ basename }) => {
         window.history.back()
       } else {
         openAlert({
-          messages: 'Tutup Aplikasi Sajang?',
+          messages: 'Tutup Aplikasi Mitra Satu Pintu?',
           isConfirm: true,
           btnConfirmText: 'Ya',
           btnCloseText: 'Tidak',
@@ -124,6 +134,31 @@ const App: React.FC<Props> = ({ basename }) => {
             <Route path='/edit-info-acc' element={<EditInfoAccount />} />
             <Route path='/contact-us' element={<ContactUs />} />
             <Route path='/password-update' element={<PasswordUpdate />} />
+            <Route path='/about-app' element={<AboutApp />} />
+            <Route path='/armada-list' element={<ArmadaList />} />
+            <Route path='/armada-create' element={<CreateArmada />} />
+            <Route path='/dumping-list' element={<Dumping />} />
+            <Route
+              path='/dumping-detail-history/:id_iplt'
+              element={<DumpingDetailHistory />}
+            />
+            <Route
+              path='/dumping-detail/:id_accommodation'
+              element={<DumpingDetail />}
+            />
+            <Route path='/dumping-create' element={<DumpingSubmit />} />
+            <Route
+              path='/volume-order/:id_transaction'
+              element={<VolumeOrder />}
+            />
+            <Route
+              path='/armada-edit/:id_accommodation'
+              element={<EditArmada />}
+            />
+            <Route
+              path='/tracking-maps/:id_transaction'
+              element={<MapTracking />}
+            />
             <Route
               path='/choose-bank-account'
               element={<WithdrawChooseBank />}
@@ -131,6 +166,10 @@ const App: React.FC<Props> = ({ basename }) => {
             <Route
               path='/detail-transaction/:id_transaction'
               element={<DetailTransaction />}
+            />
+            <Route
+              path='/detail-kontruksi-wait/:id_transaction'
+              element={<DetailKontruksiLayananWait />}
             />
             <Route
               path='/detail-kontruksi/:id_transaction'

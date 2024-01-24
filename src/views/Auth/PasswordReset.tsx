@@ -122,7 +122,7 @@ export const PasswordReset: React.FC = () => {
       </div>
       <div className='text-neutral-30 text-sm mb-7'>
         {
-          'Masukkan email yang terdaftar pada akun Sajang untuk menerima instruksi kata sandi'
+          'Masukkan email yang terdaftar pada akun Mitra Satu Pintu untuk menerima instruksi kata sandi'
         }
       </div>
 

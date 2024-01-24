@@ -146,7 +146,7 @@ export const HomeWithdraw: React.FC = () => {
           <img
             src={images.bg_no_product}
             alt=''
-            className='mx-auto w-20 h-20'
+            className='mx-auto w-20 h-16'
           />
           <p className='text-sm font-semi-bold text-center text-primary-base mt-4'>
             Belum ada riwayat transaksi

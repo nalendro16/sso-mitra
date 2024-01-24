@@ -9,6 +9,11 @@ interface AppContextInterface {
   closeAlert: (e: any) => void
   levelMitra: string
   setLevelMitra: (e: any) => void
+  watcherID: string
+  setWatcherID: (e: string) => void
+  isModalLocationShow: boolean
+  closeModalLocation: () => void
+  openModalLocation: () => void
 }
 
 export const AppContext = React.createContext<AppContextInterface>({
@@ -17,11 +22,18 @@ export const AppContext = React.createContext<AppContextInterface>({
   closeAlert: (e: any) => {},
   levelMitra: '',
   setLevelMitra: (e: any) => {},
+  watcherID: '',
+  setWatcherID: (e: string) => {},
+  isModalLocationShow: false,
+  closeModalLocation: () => {},
+  openModalLocation: () => {},
 })
 
 export const AppProvider: React.FC = ({ children }) => {
   const [alert, dispatchAlert] = useReducer(alertReducer, alertState)
   const [levelMitra, setLevelMitra] = useState<string>('')
+  const [watcherID, setWatcherID] = useState<string>('')
+  const [isModalLocationShow, setModalLocationShow] = useState(false)
 
   const openAlert = (action: any) => {
     return new Reducer(alert, dispatchAlert).dispatch({
@@ -36,6 +48,15 @@ export const AppProvider: React.FC = ({ children }) => {
     }
     dispatchAlert({ type: actionType.CLOSE })
   }
+
+  const closeModalLocation = () => {
+    setModalLocationShow(false)
+  }
+
+  const openModalLocation = () => {
+    setModalLocationShow(true)
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -44,6 +65,11 @@ export const AppProvider: React.FC = ({ children }) => {
         closeAlert,
         levelMitra,
         setLevelMitra,
+        watcherID,
+        setWatcherID,
+        isModalLocationShow,
+        closeModalLocation,
+        openModalLocation,
       }}
     >
       {children}

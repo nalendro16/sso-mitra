@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Sajang Mitra</string>
-    <string name="title_activity_main">Sajang Mitra</string>
+    <string name="app_name">Mitra Satu Pintu</string>
+    <string name="title_activity_main">Mitra Satu Pintu</string>
     <string name="package_name">com.sajang.mitra</string>
     <string name="custom_url_scheme">com.sajang.mitra</string>
 </resources>

@@ -1,3 +1,4 @@
+import { BackgroundGeolocationPlugin } from '@capacitor-community/background-geolocation'
 import images from 'assets/images'
 import { useState, useEffect } from 'react'
 import { AnimatedDiv, Header, StepItem } from 'components'
@@ -9,17 +10,30 @@ import { useGlobalContext } from 'hooks/context'
 import { LocalStorage } from 'utils'
 import { StorageKey } from 'config/storage'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
+import { Geolocation } from '@capacitor/geolocation'
+import { registerPlugin } from '@capacitor/core'
+const BackgroundGeolocation = registerPlugin<BackgroundGeolocationPlugin>(
+  'BackgroundGeolocation'
+)
 
 export const TrackOrder: React.FC = () => {
   const navigate = useNavigate()
   const storage = new LocalStorage()
-  const { openAlert } = useGlobalContext()
+  const { openAlert, setWatcherID, watcherID } = useGlobalContext()
   const { id } = useParams()
+  const [coor, setCoor] = useState<{ lat: number; long: number }>({
+    lat: 0,
+    long: 0,
+  })
   const [dataTracking, setDataTracking] = useState<any>([])
   const [dataOrderDetail, setDataOrderDetail] = useState<any>()
   const [dataGetTracking, getTrackingData] = useGet({ isLoading: false })
-  const [dataTrackingFinish, getTrackingFinish] = usePost({ isLoading: false })
-  const [doneSurvey, postDoneSurvey] = usePost({ isLoading: false })
+  const [dataTrackingFinish, getTrackingFinish] = usePost({ isLoading: false }) //finish sedot
+  const [dataStartSedot, postStartSedot] = usePost({ isLoading: false })
+  const [startRenov, postStartRenov] = usePost({ isLoading: false })
+  const [finishRenov, postFinishRenov] = usePost({ isLoading: false }) // finish renov
+  const [startTracking, postStartTracking] = usePost({ isLoading: false })
+  let levelsMitra = storage.getItem(StorageKey?.LEVEL)
 
   useEffect(() => {
     let levelMitra = storage.getItem(StorageKey?.LEVEL)
@@ -28,16 +42,30 @@ export const TrackOrder: React.FC = () => {
     } else {
       getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL + id)
     }
+    printCurrentPosition()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   useEffect(() => {
-    const { data } = doneSurvey
+    const { data } = dataStartSedot
     if (data?.status === 'success') {
-      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL_KONTRAKTOR + id)
+      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL + id)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [doneSurvey])
+  }, [dataStartSedot])
+
+  useEffect(() => {
+    const { data } = startTracking
+    if (data?.status === 'success') {
+      navigate(`/tracking-maps/${id}`)
+      storage.setItem(StorageKey.ID_TRANSACTION, id)
+    } else if (data?.status === 'fail') {
+      openAlert({
+        messages: data?.messages,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startTracking])
 
   useEffect(() => {
     const { data } = dataGetTracking
@@ -58,6 +86,9 @@ export const TrackOrder: React.FC = () => {
         showBtnClose: false,
         isConfirm: true,
       })
+      storage.remove(StorageKey.ID_TRANSACTION)
+      BackgroundGeolocation.removeWatcher({ id: watcherID })
+      setWatcherID('')
       getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL + id)
     } else if (data?.status === 'fail') {
       openAlert({
@@ -67,15 +98,100 @@ export const TrackOrder: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataTrackingFinish])
 
-  const handleLastStep = () => {
+  useEffect(() => {
+    const { data } = startRenov
+    if (data?.status === 'success') {
+      openAlert({
+        messages: data?.messages || 'Pekerjaan sedang berlangsung',
+        showBtnClose: false,
+        isConfirm: true,
+      })
+      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL_KONTRAKTOR + id)
+    } else if (data?.status === 'fail') {
+      openAlert({
+        messages: data?.messages,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startRenov])
+
+  useEffect(() => {
+    const { data } = finishRenov
+    if (data?.status === 'success') {
+      openAlert({
+        messages: data?.messages || 'Pekerjaan berhasil terselesaikan',
+        showBtnClose: false,
+        isConfirm: true,
+      })
+      storage.remove(StorageKey.ID_TRANSACTION)
+      BackgroundGeolocation.removeWatcher({ id: watcherID })
+      setWatcherID('')
+      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL_KONTRAKTOR + id)
+    } else if (data?.status === 'fail') {
+      openAlert({
+        messages: data?.messages,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finishRenov])
+
+  const handleStepData = (datas: number) => {
+    switch (datas) {
+      case 3:
+        return handleStartTracking()
+      case 4:
+        // return handleStartWork()
+        return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
+          ? handleStartTracking()
+          : handleStartWork()
+      case 5:
+        return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
+          ? navigate(
+              `/detail-kontruksi-rab/${dataOrderDetail?.id_transaction_renovasi}/${dataOrderDetail?.id_transaction}`
+            )
+          : navigate(`/volume-order/${dataOrderDetail?.id_transaction}`, {
+              state: dataOrderDetail,
+            })
+      case 6:
+        return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
+          ? navigate(
+              `/detail-kontruksi-wait/${dataOrderDetail?.id_transaction}`
+            )
+          : console.log(datas)
+      case 7:
+        return handleStartWork()
+      case 8:
+        return handleFinishWork()
+      default:
+        return void 0
+    }
+  }
+
+  // const handleLastStep = () => {
+  //   openAlert({
+  //     messages: 'Apakah seluruh pekerjaan sudah selesai?',
+  //     isConfirm: true,
+  //     btnConfirmText: 'Ya',
+  //     btnCloseText: 'Tidak',
+  //     callback: (e: any) => {
+  //       if (e.isConfirm) {
+  //         getTrackingFinish.getRequest(API.TRACKING_FINISH_SEDOT, {
+  //           id_transaction: dataOrderDetail?.id_transaction,
+  //         })
+  //       }
+  //     },
+  //   })
+  // }
+
+  const handleFinishWork = () => {
     openAlert({
-      messages: 'Apakah seluruh pekerjaan sudah selesai?',
+      messages: 'Pastikan seluruh pekerjaan sudah selesai?',
       isConfirm: true,
       btnConfirmText: 'Ya',
       btnCloseText: 'Tidak',
       callback: (e: any) => {
         if (e.isConfirm) {
-          getTrackingFinish.getRequest(API.TRACKING_FINISH_SEDOT, {
+          postFinishRenov.getRequest(API.FINISH_RENOV, {
             id_transaction: dataOrderDetail?.id_transaction,
           })
         }
@@ -83,17 +199,62 @@ export const TrackOrder: React.FC = () => {
     })
   }
 
-  const handleConfirmRenov = () => {
+  const handleStartWork = () => {
+    let levelMitra = storage.getItem(StorageKey?.LEVEL)
     openAlert({
-      messages: 'Pastikan anda sudah melakukan survey lokasi?',
+      messages: 'Apakah pekerjaan akan dimulai?',
       isConfirm: true,
       btnConfirmText: 'Ya',
       btnCloseText: 'Tidak',
       callback: (e: any) => {
         if (e.isConfirm) {
-          postDoneSurvey.getRequest(API.SURVEY_RENOV, {
-            id_transaction: dataOrderDetail?.id_transaction,
-          })
+          if (levelMitra === 'Kontraktor') {
+            postStartRenov.getRequest(API.START_RENOV, {
+              id_transaction: dataOrderDetail?.id_transaction,
+            })
+          } else {
+            postStartSedot.getRequest(API.START_SEDOT, {
+              id_transaction: dataOrderDetail?.id_transaction,
+            })
+          }
+        }
+      },
+    })
+  }
+
+  const printCurrentPosition = async () => {
+    const coordinates = await Geolocation.getCurrentPosition()
+
+    setCoor({
+      lat: coordinates?.coords?.latitude,
+      long: coordinates?.coords?.longitude,
+    })
+  }
+
+  const handleStartTracking = () => {
+    let levelMitra = storage.getItem(StorageKey?.LEVEL)
+
+    openAlert({
+      title: 'Mulai Pekerjaan',
+      messages: 'Mulai perjalanan dan pengerjaan ke lokasi Customer?',
+      isConfirm: true,
+      btnConfirmText: 'Oke',
+      btnCloseText: 'Nanti',
+      callback: (e: any) => {
+        if (e.isConfirm) {
+          if (levelMitra === 'Kontraktor') {
+            postStartTracking.getRequest(API.START_TRACKING_RENOV, {
+              id_transaction: id,
+              latitude: coor.lat,
+              longitude: coor.long,
+            })
+          } else {
+            postStartTracking.getRequest(API.START_TRACKING_SEDOT, {
+              id_transaction: id,
+              latitude: coor.lat,
+              longitude: coor.long,
+            })
+          }
         }
       },
     })
@@ -212,18 +373,17 @@ export const TrackOrder: React.FC = () => {
             <StepItem
               data={item}
               key={index}
-              onLastStep={() =>
-                storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
-                  ? handleConfirmRenov()
-                  : handleLastStep()
-              }
-              onPengajuanRAB={() =>
-                navigate(
-                  `/detail-kontruksi-rab/${dataOrderDetail?.id_transaction_renovasi}/${dataOrderDetail?.id_transaction}`
+              className='bg-yellow'
+              handleStep={() =>
+                handleStepData(
+                  levelsMitra === 'Kontraktor' &&
+                    item.step === dataGetTracking?.data?.result?.step
+                    ? dataGetTracking?.data?.result?.step
+                    : item.step ===
+                      dataGetTracking?.data?.result?.clickable_step
+                    ? item.step
+                    : 0
                 )
-              }
-              onFinalStep={() =>
-                navigate(`/detail-kontruksi/${dataOrderDetail?.id_transaction}`)
               }
             />
           ))}

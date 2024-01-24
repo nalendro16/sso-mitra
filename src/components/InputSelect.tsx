@@ -15,6 +15,7 @@ interface InputSelectProps {
   isSearchable?: boolean
   onChange: (e: any) => void
   error?: string
+  classNameLabel?: string
 }
 
 export const InputSelect: React.FC<InputSelectProps> = ({
@@ -23,6 +24,7 @@ export const InputSelect: React.FC<InputSelectProps> = ({
   placeholder,
   value,
   options,
+  classNameLabel,
   isSearchable = false,
   onChange,
   noOptionsMessage,
@@ -31,7 +33,14 @@ export const InputSelect: React.FC<InputSelectProps> = ({
   return (
     <div className={clsx('text-sm', className)}>
       {label && (
-        <div className='font-semi-bold text-neutral-30 mb-2'>{label}</div>
+        <div
+          className={clsx(
+            'font-semi-bold text-neutral-30 mb-2',
+            classNameLabel
+          )}
+        >
+          {label}
+        </div>
       )}
       <Select
         placeholder={placeholder}

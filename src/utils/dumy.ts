@@ -79,7 +79,7 @@ export const MENU_PROFILE = [
   {
     label: 'Tentang Aplikasi',
     icon: images.ic_profile_about,
-    to: '',
+    to: '/about-app',
   },
   {
     label: 'FAQs',
@@ -103,6 +103,11 @@ export const BANNER_HOME = [
   {
     banner: images.ic_banner_3,
   },
+]
+
+export const STANDAR_SEPTICTANK = [
+  { label: 'Leher Angsa', value: 'Leher Angsa' },
+  { label: 'Standard', value: 'Standard' },
 ]
 
 export const ACTIVITY_HOME = [

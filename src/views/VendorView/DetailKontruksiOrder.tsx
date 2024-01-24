@@ -4,7 +4,6 @@ import { API } from 'config/api'
 import { useGlobalContext } from 'hooks/context'
 import { useGet, usePost } from 'hooks/useRequest'
 import { useState, useEffect } from 'react'
-import Skeleton from 'react-loading-skeleton'
 import { useNavigate, useParams } from 'react-router-dom'
 
 export const DetailKontruksiOrder: React.FC = () => {
@@ -121,7 +120,7 @@ export const DetailKontruksiOrder: React.FC = () => {
         </div>
       </div>
 
-      <div className='mb-3'>
+      <div className='mb-28'>
         <div className='font-semi-bold text-primary-darker mb-2 text-sm'>
           Lampiran Foto
         </div>

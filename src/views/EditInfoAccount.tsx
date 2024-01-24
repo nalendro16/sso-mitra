@@ -1,4 +1,4 @@
-import { Button, Header, Input, InputSelect } from 'components'
+import { Button, Header, Input } from 'components'
 import { API } from 'config/api'
 import { useGlobalContext } from 'hooks/context'
 import { useGet, usePost } from 'hooks/useRequest'
