@@ -1,6 +1,6 @@
 import { BackgroundGeolocationPlugin } from '@capacitor-community/background-geolocation'
 import { Capacitor, registerPlugin } from '@capacitor/core'
-import { Button, Header } from 'components'
+import { Button, Header, InputSelect } from 'components'
 import { API } from 'config/api'
 import { StorageKey } from 'config/storage'
 import { useGlobalContext } from 'hooks/context'
@@ -19,13 +19,41 @@ export const VolumeOrder: React.FC = () => {
   const navigate = useNavigate()
   const { openAlert, setWatcherID, watcherID } = useGlobalContext()
   const [dataBiaya, postBiaya] = usePost({ isLoading: false })
+  const [optionTarif, setOptionTarif] = useState<any[]>()
+  const [selectedTarif, setSelectedTarif] = useState(null)
+  const [dataTarif, postDataTarif] = usePost({ isLoading: false })
   const [form, setForm] = useState({
     id_transaction: id_transaction,
     volume_sedot_wc: '',
+    id_tarif: '',
   })
   const [error, setError] = useState({
     volume_sedot_wc: '',
+    id_tarif: '',
   })
+
+  useEffect(() => {
+    postDataTarif.getRequest(API.TARIF_SEDOT, {
+      id_transaction: state?.id_transaction,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    const { data } = dataTarif
+    if (data?.status === 'success') {
+      let tmp: any[] = []
+      data?.result?.forEach((item: any) => {
+        tmp.push({
+          label: `${item?.name_tarif} - ${item?.price_tarif}`,
+          value: item.id_tarif,
+        })
+      })
+      setOptionTarif([...tmp])
+    } else if (data?.status === 'fail') {
+      openAlert({ messages: data?.messages })
+    }
+  }, [dataTarif])
 
   useEffect(() => {
     const { data } = dataBiaya
@@ -42,7 +70,12 @@ export const VolumeOrder: React.FC = () => {
 
   const onSubmit = () => {
     postBiaya.getRequest(API.PERHITUNGAN_BIAYA_SEDOT, form)
-    console.log(form)
+    // console.log(form)
+  }
+
+  const handleSelectTarif = (e: any) => {
+    setSelectedTarif(e)
+    setForm({ ...form, id_tarif: e.value })
   }
 
   return (
@@ -113,6 +146,19 @@ export const VolumeOrder: React.FC = () => {
           L
         </div>
       </div>
+
+      <InputSelect
+        className='mt-5 mb-4'
+        label='Tarif'
+        placeholder='Pilih Tarif'
+        noOptionsMessage={() => 'Daftar tarif kosong'}
+        value={selectedTarif}
+        options={optionTarif}
+        isSearchable
+        menuPlacement='top'
+        onChange={handleSelectTarif}
+      />
+
       <div
         className={`fixed bottom-0 w-full bg-white p-4 -mx-4 ${
           Capacitor.isNativePlatform() ? 'max-w-content-full' : 'max-w-content'

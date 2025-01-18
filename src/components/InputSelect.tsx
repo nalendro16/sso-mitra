@@ -1,7 +1,7 @@
 import images from 'assets/images'
 import clsx from 'clsx'
 import React from 'react'
-import Select from 'react-select'
+import Select, { MenuPlacement } from 'react-select'
 
 interface InputSelectProps {
   className?: string
@@ -16,6 +16,7 @@ interface InputSelectProps {
   onChange: (e: any) => void
   error?: string
   classNameLabel?: string
+  menuPlacement?: MenuPlacement
 }
 
 export const InputSelect: React.FC<InputSelectProps> = ({
@@ -29,6 +30,7 @@ export const InputSelect: React.FC<InputSelectProps> = ({
   onChange,
   noOptionsMessage,
   error,
+  menuPlacement = 'auto',
 }) => {
   return (
     <div className={clsx('text-sm', className)}>
@@ -48,6 +50,7 @@ export const InputSelect: React.FC<InputSelectProps> = ({
         options={options}
         noOptionsMessage={noOptionsMessage}
         styles={styleReactSelect}
+        menuPlacement={menuPlacement}
         isSearchable={isSearchable}
         onChange={onChange}
       />

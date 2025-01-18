@@ -1,18 +1,10 @@
 import images from 'assets/images'
-import {
-  Button,
-  Header,
-  Input,
-  InputCurrency,
-  InputSelect,
-  Modal,
-} from 'components'
+import { Button, Header, Input, InputSelect, Modal } from 'components'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useGet, usePost } from 'hooks/useRequest'
 import { API } from 'config/api'
 import { useGlobalContext } from 'hooks/context'
-import { STANDAR_SEPTICTANK } from 'utils/dumy'
 
 export const RancanganAnggaranBiaya: React.FC = () => {
   const navigate = useNavigate()
@@ -28,22 +20,23 @@ export const RancanganAnggaranBiaya: React.FC = () => {
   const [dataDeleteMaterial, postDeleteMaterial] = useGet({ isLoading: false })
   const [dataEditMaterial, postEditMaterial] = usePost({ isLoading: false })
   const [standard_septic_tank, setStandard_septic_tank] = useState<string>('')
-  const [selectedStandardSepticTank, setSelectedSepticTank] = useState<any>()
+  const [selectedStandardSepticTank, setSelectedSepticTank] = useState<{
+    label: string
+    value: number | null
+  }>()
+
+  const [dataStandarOption, postDataStandarOption] = usePost({
+    isLoading: false,
+  })
+  const [dataStandarOptionDetail, postDataStandarOptionDetail] = usePost({
+    isLoading: false,
+  })
+  const [optionStandar, setOptionStandar] = useState([])
+  const [detailStandar, setDetailStandar] = useState<any>([])
 
   const [dataSubmitRAB, postSubmitRAB] = usePost({ isLoading: false })
 
-  const [currentJasa, setCurrentJasa] = useState<any>()
-  const [isModalJasa, setAddModalJasa] = useState<boolean>(false)
-
   const [formMaterial, setFormMaterial] = useState({
-    id_transaction_renovasi: id_transaction,
-    type: '', //Material or Jasa
-    name_product: '',
-    product_price: '',
-    qty: '',
-  })
-
-  const [formJasa, setFormJasa] = useState({
     id_transaction_renovasi: id_transaction,
     type: '', //Material or Jasa
     name_product: '',
@@ -54,8 +47,40 @@ export const RancanganAnggaranBiaya: React.FC = () => {
   useEffect(() => {
     postDataListAllRAB.getRequest(API.RAB_LIST, {
       id_transaction_renovasi: id_transaction,
+      id_paket: selectedStandardSepticTank?.value,
+    })
+    postDataStandarOption.getRequest(API.RAB_PAKET, {
+      id_transaction_renovasi: id_transaction,
     })
   }, [])
+
+  useEffect(() => {
+    const { data } = dataStandarOption
+    if (data?.status === 'success') {
+      let tmp: any = []
+      data?.result?.forEach((item: any) => {
+        tmp.push({
+          label: `${item.name_paket} - ${item.price_paket}`,
+          value: item.id_paket,
+        })
+      })
+      setOptionStandar(tmp)
+    }
+  }, [dataStandarOption])
+
+  useEffect(() => {
+    const { data } = dataStandarOptionDetail
+    if (data?.status === 'success') {
+      setDetailStandar(data.result)
+      postDataListAllRAB.getRequest(API.RAB_LIST, {
+        id_transaction_renovasi: id_transaction,
+        id_paket: selectedStandardSepticTank?.value,
+      })
+    } else if (data?.status === 'fail') {
+      setDetailStandar([])
+      openAlert({ messages: data?.messages })
+    }
+  }, [dataStandarOptionDetail])
 
   useEffect(() => {
     const { data } = dataSubmitRAB
@@ -78,10 +103,10 @@ export const RancanganAnggaranBiaya: React.FC = () => {
     if (data?.status === 'success') {
       postDataListAllRAB.getRequest(API.RAB_LIST, {
         id_transaction_renovasi: id_transaction,
+        id_paket: selectedStandardSepticTank?.value,
       })
       onResetForm()
       setAddModalMaterial(false)
-      setAddModalJasa(false)
     } else if (data?.status === 'fail') {
       openAlert({
         messages: data?.messages || 'terjadi kesalahan saat input material',
@@ -94,6 +119,7 @@ export const RancanganAnggaranBiaya: React.FC = () => {
     if (data?.status === 'success') {
       postDataListAllRAB.getRequest(API.RAB_LIST, {
         id_transaction_renovasi: id_transaction,
+        id_paket: selectedStandardSepticTank?.value,
       })
     } else if (data?.status === 'fail') {
       openAlert({
@@ -107,11 +133,11 @@ export const RancanganAnggaranBiaya: React.FC = () => {
     if (data?.status === 'success') {
       postDataListAllRAB.getRequest(API.RAB_LIST, {
         id_transaction_renovasi: id_transaction,
+        id_paket: selectedStandardSepticTank?.value,
       })
       setModalEditMaterial(false)
       onResetForm()
       setAddModalMaterial(false)
-      setAddModalJasa(false)
     } else if (data?.status === 'fail') {
       openAlert({
         messages: data?.messages || 'terjadi kesalahan saat input material',
@@ -132,14 +158,6 @@ export const RancanganAnggaranBiaya: React.FC = () => {
       product_price: '',
       qty: '',
     })
-
-    setFormJasa({
-      id_transaction_renovasi: id_transaction,
-      type: '', //Material or Jasa
-      name_product: '',
-      product_price: '',
-      qty: '',
-    })
   }
 
   const onAddMaterial = () => {
@@ -152,31 +170,8 @@ export const RancanganAnggaranBiaya: React.FC = () => {
     })
   }
 
-  const onAddJasa = () => {
-    postAddMaterial.getRequest(API.RAB_CREATE, {
-      id_transaction_renovasi: formJasa?.id_transaction_renovasi,
-      type: formJasa?.type, //Material or Jasa
-      name_product: formJasa.name_product,
-      product_price: formJasa?.product_price,
-      qty: formJasa?.qty,
-    })
-  }
-
   const onDeleteMaterial = (id: number) => {
     postDeleteMaterial.getRequest(API.RAB_DELETE + id)
-  }
-
-  const handleEditJasa = (item: any) => {
-    setFormJasa({
-      ...formJasa,
-      type: item?.type, //Material or Jasa
-      name_product: item?.name_product,
-      product_price: item?.product_price,
-      qty: item?.qty,
-    })
-    setCurrentJasa(item)
-    setModalEditMaterial(true)
-    setAddModalJasa(true)
   }
 
   const handleEditMaterial = (item: any) => {
@@ -202,16 +197,6 @@ export const RancanganAnggaranBiaya: React.FC = () => {
     })
   }
 
-  const onEditJasa = () => {
-    postEditMaterial.getRequest(API.RAB_EDIT, {
-      transaction_renovasi_detail: currentJasa?.transaction_renovasi_detail,
-      type: formJasa?.type, //Material or Jasa
-      name_product: formJasa?.name_product,
-      product_price: formJasa?.product_price,
-      qty: formJasa?.qty,
-    })
-  }
-
   return (
     <div>
       <Header
@@ -224,21 +209,24 @@ export const RancanganAnggaranBiaya: React.FC = () => {
 
       <div>
         <InputSelect
-          className='mb-4 '
-          label='Standar Septic Tank'
-          classNameLabel='mb-4 !font-semi-bold !text-secondary'
-          placeholder='Pilih Standar Septic Tank'
+          className='mb-8'
+          label='Paket Pembangunan'
+          classNameLabel='mb-2 !font-semi-bold !text-secondary'
+          placeholder='Pilih Paket Pembangunan'
           noOptionsMessage={() => 'Tidak dapat menunjukan data'}
           value={selectedStandardSepticTank}
-          options={STANDAR_SEPTICTANK}
+          options={optionStandar}
           isSearchable
           onChange={(e) => {
             setSelectedSepticTank(e)
             setStandard_septic_tank(e.value)
+            postDataStandarOptionDetail.getRequest(API.RAB_PAKET_DETAIL, {
+              id_paket: e.value,
+            })
           }}
         />
 
-        <div className='mb-4 font-semi-bold'>{'Material'}</div>
+        <div className=' font-semi-bold'>{'Tambahan Biaya'}</div>
         {dataRAB?.material.map((item: any, index: number) => (
           <div className='w-full' key={index}>
             <div className='justify-between items-end flex w-full'>
@@ -267,7 +255,7 @@ export const RancanganAnggaranBiaya: React.FC = () => {
         ))}
 
         <div
-          className=' shadow-md outline-1 outline-dashed outline-primary-lightest text-center py-2 rounded-xl text-primary-lighter font-semi-bold flex justify-center gap-2 items-center mt-6'
+          className=' shadow-md outline-1 outline-dashed outline-primary-lightest text-center py-2 rounded-xl text-primary-lighter font-semi-bold flex justify-center gap-2 items-center mt-4'
           onClick={() => {
             setAddModalMaterial(true)
             setFormMaterial({ ...formMaterial, type: 'Material' })
@@ -278,46 +266,25 @@ export const RancanganAnggaranBiaya: React.FC = () => {
         </div>
       </div>
 
-      <div className='mt-4 mb-28'>
-        <div className='mb-4 font-semi-bold'>{'Jasa'}</div>
-        {dataRAB?.jasa.map((item: any, index: number) => (
-          <div className='w-full' key={index}>
-            <div className='justify-between items-end flex w-full'>
-              <div className='text-sm mt-4'>{item?.name_product}</div>
-              <div className='flex items-center gap-4'>
-                <div
-                  className='text-xs flex items-center text-error gap-1'
-                  onClick={() =>
-                    onDeleteMaterial(item.transaction_renovasi_detail)
-                  }
-                >
-                  <div>Delete</div>
-                  <img src={images.ic_delete} alt='' className='h-5' />
-                </div>
-                <img
-                  src={images.ic_edit_rab}
-                  alt=''
-                  onClick={() => handleEditJasa(item)}
-                />
+      {detailStandar?.length !== 0 ? (
+        <div className='mt-6'>
+          <div>Paket ini berisi</div>
+          {detailStandar?.map((item: any, index: number) => (
+            <div
+              key={index}
+              className='border border-neutral-20 rounded-lg p-2'
+            >
+              <div className='flex justify-between'>
+                <div>{item.spesifikasi_paket}</div>
+                <div>{item.jumlah}</div>
+                <div>{item.satuan}</div>
               </div>
             </div>
-            <div className='bg-neutral-10 p-2 mt-2 rounded-lg text-sm px-4'>
-              Rp.{item?.product_price}
-            </div>
-          </div>
-        ))}
-
-        <div
-          className='shadow-md outline-1 outline-dashed outline-primary-lightest text-center py-2 rounded-xl text-primary-lighter font-semi-bold flex justify-center gap-2 items-center mt-6'
-          onClick={() => {
-            setAddModalJasa(true)
-            setFormJasa({ ...formJasa, type: 'Jasa' })
-          }}
-        >
-          <img src={images.ic_plus} alt='' className='h-6' />
-          <div>Tambah</div>
+          ))}
         </div>
-      </div>
+      ) : (
+        <></>
+      )}
 
       <div className='w-full -ml-4 fixed bottom-0 max-w-content p-4 pt-6 rounded-t-xl top-shadow bg-white'>
         <div className='mb-4 text-sm'>
@@ -334,7 +301,9 @@ export const RancanganAnggaranBiaya: React.FC = () => {
             </div>
           </div>
           <Button
-            disabled={dataSubmitRAB?.isLoading || !standard_septic_tank}
+            disabled={
+              dataSubmitRAB?.isLoading || !selectedStandardSepticTank?.value
+            }
             onClick={() =>
               openAlert({
                 title: 'Apakah anda yakin ingin melanjutkan?',
@@ -345,7 +314,7 @@ export const RancanganAnggaranBiaya: React.FC = () => {
                   if (e.isConfirm) {
                     postSubmitRAB.getRequest(API.CONFIRM_RAB, {
                       id_transaction: id,
-                      standard_septic_tank: standard_septic_tank,
+                      id_paket: standard_septic_tank,
                     })
                   }
                 },
@@ -368,8 +337,8 @@ export const RancanganAnggaranBiaya: React.FC = () => {
       >
         <div className='p-4 bg-white h-1/3 rounded-lg'>
           <Input
-            placeholder='Nama material'
-            label='Nama material'
+            placeholder='Peruntukan Biaya'
+            label='Peruntukan Biaya'
             name='name_product'
             value={formMaterial.name_product}
             onChange={handleChangeForm}
@@ -408,65 +377,6 @@ export const RancanganAnggaranBiaya: React.FC = () => {
             onClick={() =>
               isModalEditMaterial ? onEditMaterial() : onAddMaterial()
             }
-            className='btn-primary w-full mt-4'
-            label={`${isModalEditMaterial ? 'Ubah' : 'Tambah'}`}
-          />
-        </div>
-      </Modal>
-
-      <Modal
-        show={isModalJasa}
-        onHide={() => {
-          setAddModalJasa(false)
-          onResetForm()
-        }}
-        dialogClassName='px-8'
-      >
-        <div className='p-4 bg-white h-1/3 rounded-lg'>
-          <Input
-            placeholder='Nama Jasa'
-            label='Nama jasa'
-            name='name_product'
-            value={formJasa.name_product}
-            onChange={(e) =>
-              setFormJasa({
-                ...formJasa,
-                name_product: e.value,
-              })
-            }
-          />
-          <div className='text-sm mt-4 mb-2'>Harga Jasa</div>
-          <input
-            className='appearance-none focus:outline-none w-full rounded-md bg-neutral-10 focus:border-active p-3'
-            type='number'
-            placeholder='Harga keseluruhan jasa*'
-            value={formJasa?.product_price}
-            name='product_price'
-            onChange={(e) =>
-              setFormJasa({
-                ...formJasa,
-                product_price: e.target.value,
-              })
-            }
-            autoComplete='off'
-          />
-          <div className='text-sm mt-4 mb-2'>Jumlah</div>
-          <input
-            className='appearance-none focus:outline-none w-full rounded-md bg-neutral-10 focus:border-active p-3'
-            type='number'
-            placeholder='Jumlah keseluruhan material'
-            value={formJasa?.qty}
-            name='qty'
-            onChange={(e) =>
-              setFormJasa({
-                ...formJasa,
-                qty: e.target.value,
-              })
-            }
-            autoComplete='off'
-          />
-          <Button
-            onClick={() => (isModalEditMaterial ? onEditJasa() : onAddJasa())}
             className='btn-primary w-full mt-4'
             label={`${isModalEditMaterial ? 'Ubah' : 'Tambah'}`}
           />

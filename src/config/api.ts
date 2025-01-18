@@ -48,6 +48,8 @@ export const API = {
   RAB_CREATE: '/api/kontraktor/rab/create',
   RAB_DELETE: '/api/kontraktor/rab/delete/',
   RAB_EDIT: '/api/kontraktor/rab/edit',
+  RAB_PAKET: '/api/kontraktor/paket',
+  RAB_PAKET_DETAIL: '/api/kontraktor/paket/detail',
 
   CONFIRM_RAB: '/api/kontraktor/rab',
   RAB_DETAIL: '/api/kontraktor/rab/detail/',
@@ -90,6 +92,7 @@ export const API = {
 
   FINISH_SURVEY: '/api/tukang-sedot/finish-survey',
   START_SEDOT: '/api/tukang-sedot/start-work',
+  TARIF_SEDOT: '/api/tukang-sedot/tarif',
   PERHITUNGAN_BIAYA_SEDOT: '/api/tukang-sedot/perhitungan-biaya',
 
   LIST_DUMPING: '/api/dumping',

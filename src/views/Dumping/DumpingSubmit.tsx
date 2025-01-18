@@ -13,16 +13,16 @@ export const DumpingSubmit: React.FC = () => {
   const [dataCreateDumping, postCreatDumping] = usePost({ isLoading: false })
   const [selectedOption, setSelectedOption] = useState<any>({
     label: 'Non IPLT',
-    value: 1,
+    value: 0,
   })
   const [form, setForm] = useState<{
     id_accommodation: number
     iplt: number
-    nama_tempat_pembuangan: string
+    tempat_pembuangan: string
   }>({
     id_accommodation: state?.id_accommodation,
-    iplt: 1,
-    nama_tempat_pembuangan: '',
+    iplt: 0,
+    tempat_pembuangan: '',
   })
 
   useEffect(() => {
@@ -36,19 +36,13 @@ export const DumpingSubmit: React.FC = () => {
   }, [dataCreateDumping])
 
   const onSubmit = () => {
-    if (form?.iplt === 0) {
-      postCreatDumping.getRequest(API.CREATE_DUMPING, form)
-    } else {
-      postCreatDumping.getRequest(API.CREATE_DUMPING, {
-        id_accommodation: form?.id_accommodation,
-        iplt: 1,
-      })
-    }
+    postCreatDumping.getRequest(API.CREATE_DUMPING, form)
+    console.log(form)
   }
 
   const handleSelectSubject = (e: any) => {
     setSelectedOption(e)
-    setForm({ ...form, iplt: e.value, nama_tempat_pembuangan: '' })
+    setForm({ ...form, iplt: e.value, tempat_pembuangan: '' })
   }
 
   return (
@@ -89,8 +83,8 @@ export const DumpingSubmit: React.FC = () => {
           className='my-4'
           classNameLabel='!text-primary-darker !font-semibold'
           options={[
-            { label: 'IPLT', value: 0 },
-            { label: 'Non IPLT', value: 1 },
+            { label: 'IPLT', value: 1 },
+            { label: 'Non IPLT', value: 0 },
           ]}
           value={selectedOption}
           label='Tempat Pembuangan'
@@ -98,13 +92,11 @@ export const DumpingSubmit: React.FC = () => {
         />
       </div>
 
-      {form?.iplt === 1 && (
+      {form?.iplt === 0 && (
         <Input
-          onChange={(e) =>
-            setForm({ ...form, nama_tempat_pembuangan: e.value })
-          }
-          name='nama_tempat_pembuangan'
-          value={form.nama_tempat_pembuangan}
+          onChange={(e) => setForm({ ...form, tempat_pembuangan: e.value })}
+          name='tempat_pembuangan'
+          value={form.tempat_pembuangan}
           label='Nama Tempat Pembuangan'
           placeholder='Nama tempat pembuangan'
           className='mb-4'
@@ -121,7 +113,7 @@ export const DumpingSubmit: React.FC = () => {
           className='btn-primary !w-full'
           label='Dumping'
           isLoading={dataCreateDumping?.isLoading}
-          disabled={form.iplt === 1 && !form.nama_tempat_pembuangan}
+          disabled={form.iplt === 0 && !form.tempat_pembuangan}
           onClick={() =>
             openAlert({
               title: `Apakah anda yakin ingin melakukan submit?`,

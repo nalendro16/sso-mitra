@@ -83,31 +83,27 @@ export const DetailKontruksiLayananWait: React.FC = () => {
       </div>
 
       <div className='mt-4 p-4 bg-neutral-10 rounded-xl mx-2'>
-        <div className='font-bold text-primary-darker mb-2'>
-          Subtotal Material
-        </div>
+        <div className='font-bold text-primary-darker mb-2'>Subtotal</div>
         <div>
           {detailRAB?.rab?.material?.map((item: any, index: number) =>
             renderLabel({
               text: item.name_product,
               value: item.product_price,
               indx: index,
+              withoutDoubleTick: true,
             })
           )}
         </div>
 
-        <div className='font-bold text-primary-darker mt-4 mb-2'>
-          Subtotal Jasa
-        </div>
-        <div>
-          {detailRAB?.rab?.jasa?.map((item: any, index: number) =>
-            renderLabel({
-              text: item.name_product,
-              value: item.product_price,
-              indx: index,
-            })
-          )}
-        </div>
+        {detailRAB?.rab?.paket ? (
+          renderLabel({
+            text: `Paket - ${detailRAB?.rab?.paket?.name_paket}`,
+            value: detailRAB?.rab?.paket?.price_paket,
+            withoutDoubleTick: true,
+          })
+        ) : (
+          <></>
+        )}
 
         <div className='flex justify-between items-start gap-3 W-FULL text-primary-darker mt-4 '>
           <div className='font-bold'>Total</div>

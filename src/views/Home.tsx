@@ -103,7 +103,7 @@ export const Home: React.FC = () => {
     <div className='-mt-[4rem]'>
       <div className='flex justify-between items-center'>
         <div className='text-primary-darker font-bold text-lg'>
-          Mitra Satu Pintu App
+          Mitra Pintu Sanitasi App
         </div>
         <img src={images.ic_notification_blue} alt='' className='h-6 w-5' />
       </div>
