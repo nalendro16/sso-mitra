@@ -29,6 +29,7 @@ export const TrackOrder: React.FC = () => {
   const [dataOrderDetail, setDataOrderDetail] = useState<any>()
   const [dataGetTracking, getTrackingData] = useGet({ isLoading: false })
   const [dataTrackingFinish, getTrackingFinish] = usePost({ isLoading: false }) //finish sedot
+  const [dataPostAcceptOrder, postAcceptOrder] = usePost({ isLoading: false })
   const [dataStartSedot, postStartSedot] = usePost({ isLoading: false })
   const [startRenov, postStartRenov] = usePost({ isLoading: false })
   const [finishRenov, postFinishRenov] = usePost({ isLoading: false }) // finish renov
@@ -66,6 +67,18 @@ export const TrackOrder: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startTracking])
+
+  useEffect(() => {
+    const { data } = dataPostAcceptOrder
+    if (data?.status === 'success') {
+      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL_KONTRAKTOR + id)
+    } else if (data?.status === 'fail') {
+      openAlert({
+        messages: data?.messages,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataPostAcceptOrder])
 
   useEffect(() => {
     const { data } = dataGetTracking
@@ -142,7 +155,7 @@ export const TrackOrder: React.FC = () => {
       case 4:
         // return handleStartWork()
         return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
-          ? handleStartTracking()
+          ? handleStartTrackingMitra()
           : handleStartWork()
       case 5:
         return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
@@ -231,12 +244,11 @@ export const TrackOrder: React.FC = () => {
     })
   }
 
-  const handleStartTracking = () => {
+  const handleStartTrackingMitra = () => {
     let levelMitra = storage.getItem(StorageKey?.LEVEL)
 
     openAlert({
-      title: 'Mulai Pekerjaan',
-      messages: 'Mulai perjalanan dan pengerjaan ke lokasi Customer?',
+      title: 'Mulai Lacak',
       isConfirm: true,
       btnConfirmText: 'Oke',
       btnCloseText: 'Nanti',
@@ -247,6 +259,26 @@ export const TrackOrder: React.FC = () => {
               id_transaction: id,
               latitude: coor.lat,
               longitude: coor.long,
+            })
+          }
+        }
+      },
+    })
+  }
+
+  const handleStartTracking = () => {
+    let levelMitra = storage.getItem(StorageKey?.LEVEL)
+
+    openAlert({
+      title: levelMitra === 'Kontraktor' ? 'Konfirmasi Pesanan' : 'Mulai Lacak',
+      isConfirm: true,
+      btnConfirmText: 'Oke',
+      btnCloseText: 'Nanti',
+      callback: (e: any) => {
+        if (e.isConfirm) {
+          if (levelMitra === 'Kontraktor') {
+            postAcceptOrder.getRequest(API.RENOV_CONFIRM, {
+              id_transaction: id,
             })
           } else {
             postStartTracking.getRequest(API.START_TRACKING_SEDOT, {
@@ -263,7 +295,7 @@ export const TrackOrder: React.FC = () => {
   return (
     <div className='mb-16'>
       <Header
-        label='Track Order'
+        label='Lacak Pesanan'
         onBackClick={() => navigate('/transaksi')}
         labelClassName='!font-bold text-white'
         className='bg-grad-head'
@@ -351,7 +383,11 @@ export const TrackOrder: React.FC = () => {
         <div className='bg-primary-base p-4 rounded-md justify-between flex'>
           <div>
             <div className='text-sm text-white'>Progress</div>
-            <div className='font-semi-bold text-white'>Kontruksi Renovasi</div>
+            <div className='font-semi-bold text-white'>
+              {levelsMitra === 'Kontraktor'
+                ? 'Kontruksi Renovasi'
+                : 'Penyedotan tangki septic'}
+            </div>
             <div className='text-sm text-neutral-10'>
               Klik centang jika pekerjaan selsai
             </div>

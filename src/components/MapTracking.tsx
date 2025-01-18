@@ -22,16 +22,17 @@ const containerStyle = {
 }
 
 export const MapTracking: React.FC = () => {
+  const storage = new LocalStorage()
+  let levelMitra = storage.getItem(StorageKey?.LEVEL)
   const { openAlert, openModalLocation, setWatcherID, watcherID } =
     useGlobalContext()
   const [coor, setCoor] = useState<{ lat: number; lng: number }>({
-    lat: 0,
-    lng: 0,
+    lat: -7.79558,
+    lng: 110.369492,
   })
   const { id_transaction } = useParams()
   const [stops, setStop] = useState<any>([])
   const [paths, setPath] = useState<Array<{ lat: number; lng: number }>>([])
-  const storage = new LocalStorage()
   const [dataUpdateLocation, postUpdateLocation] = usePost({ isLoading: false })
   const [dataTrackingFinish, getTrackingFinish] = usePost({ isLoading: false })
   const navigate = useNavigate()
@@ -66,31 +67,6 @@ export const MapTracking: React.FC = () => {
       clearInterval(showedTime)
     }
   }, [])
-
-  // useEffect(() => {
-
-  //   let levelMitra = storage.getItem(StorageKey?.LEVEL)
-
-  //   let interval = setInterval(() => {
-  //     if (levelMitra === 'Kontraktor') {
-  //       postUpdateLocation.getRequest(API.UPDATE_TRACKING_RENOV, {
-  //         id_transaction: id_transaction,
-  //         latitude: coor.lat,
-  //         longitude: coor.lng,
-  //       })
-  //     } else {
-  //       postUpdateLocation.getRequest(API.UPDATE_TRACKING_SEDOT, {
-  //         id_transaction: id_transaction,
-  //         latitude: coor.lat,
-  //         longitude: coor.lng,
-  //       })
-  //     }
-  //   }, 60000)
-  //   return () => {
-  //     clearInterval(interval)
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [coor])
 
   useEffect(() => {
     const { data } = dataUpdateLocation
@@ -240,7 +216,7 @@ export const MapTracking: React.FC = () => {
       {/* <div className='ml-2'> */}
       <Header
         onBackClick={() => navigate(-1)}
-        label='Tracking Tukang Sedot'
+        label={levelMitra === 'Kontraktor' ? 'Lacak' : 'Lacak Truk Penyedot'}
         className='bg-gradient-header'
         labelClassName='!font-bold text-white'
         backWhite
@@ -251,7 +227,7 @@ export const MapTracking: React.FC = () => {
         <LoadScript googleMapsApiKey={googleMapKey}>
           <GoogleMap
             mapContainerStyle={containerStyle}
-            zoom={10}
+            zoom={18}
             center={{ lat: coor?.lat, lng: coor?.lng }}
           >
             {/* Child components, such as markers, info windows, etc. */}
@@ -293,7 +269,7 @@ export const MapTracking: React.FC = () => {
       <Button
         className='btn-primary !w-full mt-4'
         label={'Penyelesaian Survey'}
-        onClick={() => handleLastStep()}
+        onClick={handleLastStep}
         // isLoading={dataConfirmDelivery?.isLoading}
       />
     </div>

@@ -44,8 +44,8 @@ export const ModalArmada: React.FC<ModalArmadaProps> = ({
         show={isOpen}
         onHide={onHide}
         showClassName='!opacity-10'
-        contentClassName={`mx-4 ${
-          listArmada?.length === 1 ? 'h-1/2' : 'h-3/4'
+        contentClassName={`mx-4 min-h-fit ${
+          listArmada?.length === 1 ? 'max-h-1/2' : 'max-h-3/4'
         } bg-white px-2 no-scrollbar py-4 rounded-md overflow-auto shadow-md`}
       >
         {dataListArmana?.isLoading ? (

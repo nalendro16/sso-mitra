@@ -15,10 +15,13 @@ import { useGlobalContext } from 'hooks/context'
 import { LocalStorage } from 'utils'
 import { StorageKey } from 'config/storage'
 import { handleEmoji } from 'hooks/handleEmoji'
+import { notifyManager, useQuery } from '@tanstack/react-query'
+import { getData } from 'hooks/useFetch'
 
 export const Home: React.FC = () => {
   const storage = new LocalStorage()
   const { openAlert } = useGlobalContext()
+  const navigate = useNavigate()
   const [dataGetSummaryHome, getSummaryHome] = useGet({ isLoading: false })
   const [dataAcceptOrder, postAcceptOrder] = usePost({ isLoading: false })
   const [selectedID, setSelectedID] = useState<number>()
@@ -97,7 +100,18 @@ export const Home: React.FC = () => {
     }
   }, [dataAcceptOrder])
 
-  const navigate = useNavigate()
+  const { data: dataWhatsapp } = useQuery({
+    queryKey: ['whatsapp'],
+    queryFn: async () => {
+      const res = await getData(`/api/whatsapp`)
+
+      if (res.status !== 'success') {
+        openAlert({ messages: 'Get data whatsapp error' })
+      }
+
+      return res.result
+    },
+  })
 
   return (
     <div className='-mt-[4rem]'>
@@ -357,6 +371,15 @@ export const Home: React.FC = () => {
           })
         }}
       />
+
+      <div className='safe-bottom flex justify-end items-center fixed bottom-20 pr-4 w-full max-w-content bg-transparent z-50 -ml-4'>
+        <div
+          className='bg-primary-base rounded-full p-2'
+          onClick={() => window.open(dataWhatsapp, '_blank')}
+        >
+          <img src={images.ic_whatsapp} alt='wa float' />
+        </div>
+      </div>
     </div>
   )
 }

@@ -17,6 +17,7 @@ interface CardSedotScheduleProps {
     city?: string
     province?: string
     completed_at?: string
+    transaction_date?: string
   }
   onClick: () => void
 }
@@ -39,7 +40,9 @@ export const CardSedotSchedule: React.FC<CardSedotScheduleProps> = ({
     >
       {history && (
         <div className='flex justify-between mb-2'>
-          <div className='text-neutral-30 text-sm'>{data?.completed_at}</div>
+          <div className='text-neutral-30 text-sm'>
+            {data?.transaction_date}
+          </div>
           <div className='text-primary-darker font-bold'>
             {data?.id_transaction || '#D8FF2FDG'}
           </div>

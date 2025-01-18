@@ -95,6 +95,7 @@ import ic_armada_total from './ic_armada_total.png'
 import ic_armada_capacity from './ic_armada_capacity.png'
 import ic_armada_plat from './ic_armada_plat.png'
 import ic_dumping from './ic_dumping.png'
+import ic_whatsapp from './ic_whatsapp.svg'
 
 const images = {
   ic_user,
@@ -194,6 +195,7 @@ const images = {
   ic_armada_capacity,
   ic_armada_plat,
   ic_dumping,
+  ic_whatsapp,
 }
 
 export default images

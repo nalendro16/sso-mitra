@@ -26,10 +26,12 @@ export const VolumeOrder: React.FC = () => {
     id_transaction: id_transaction,
     volume_sedot_wc: '',
     id_tarif: '',
+    transaction_additional: '',
   })
   const [error, setError] = useState({
     volume_sedot_wc: '',
     id_tarif: '',
+    transaction_additional: '',
   })
 
   useEffect(() => {
@@ -69,8 +71,14 @@ export const VolumeOrder: React.FC = () => {
   }, [dataBiaya])
 
   const onSubmit = () => {
-    postBiaya.getRequest(API.PERHITUNGAN_BIAYA_SEDOT, form)
-    // console.log(form)
+    console.log({
+      ...form,
+      transaction_additional: parseInt(form.transaction_additional),
+    })
+    postBiaya.getRequest(API.PERHITUNGAN_BIAYA_SEDOT, {
+      ...form,
+      transaction_additional: parseInt(form.transaction_additional),
+    })
   }
 
   const handleSelectTarif = (e: any) => {
@@ -158,6 +166,23 @@ export const VolumeOrder: React.FC = () => {
         menuPlacement='top'
         onChange={handleSelectTarif}
       />
+
+      <div className='text-sm text-primary-darker font-semi-bold my-2 mt-6'>
+        Penambahan Biaya
+      </div>
+      <div className='flex bg-neutral-10 items-center rounded-md'>
+        <input
+          type='number'
+          placeholder='Biaya tambahan lain'
+          className='resize-none placeholder:text-sm appearance-none focus:outline-none w-full rounded-md bg-neutral-10 focus:border-active p-3'
+          name='transaction_additional'
+          value={form.transaction_additional}
+          onChange={(e) => {
+            setForm({ ...form, transaction_additional: e.target.value })
+            setError({ ...error, transaction_additional: '' })
+          }}
+        />
+      </div>
 
       <div
         className={`fixed bottom-0 w-full bg-white p-4 -mx-4 ${

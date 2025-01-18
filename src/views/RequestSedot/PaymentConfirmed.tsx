@@ -5,7 +5,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 export const PaymentConfirmed: React.FC = () => {
   const navigate = useNavigate()
   const { state } = useLocation() as any
-  console.log(state)
   return (
     <div className='h-full w-full absolute top-0 left-0 bg-gradient-header flex flex-col px-4 pt-16 pb-8'>
       <div className='text-lg text-center text-white font-semi-bold my-4'>
@@ -36,7 +35,7 @@ export const PaymentConfirmed: React.FC = () => {
 
       <Button
         onClick={() => navigate(`/track-order/${state?.id_transaction}`)}
-        label='Track Order'
+        label='Lacak Pesanan'
         className='bg-primary-base text-white w-full outline outline-white outline-1 mt-8 mb-4'
       />
       <Button
