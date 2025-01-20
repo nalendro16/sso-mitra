@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
   appId: 'com.sajang.mitra',
-  appName: 'Mitra Pintu Sanitasi',
+  appName: 'Mitra Gedang Mesem',
   webDir: 'build',
   server: {
     androidScheme: 'https',

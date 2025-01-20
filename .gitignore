@@ -11,6 +11,8 @@
 # production
 /build
 /android
+/resources
+/icons
 
 # misc
 .DS_Store
