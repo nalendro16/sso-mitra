@@ -1,12 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import images from 'assets/images'
-import {
-  AnimatedDiv,
-  CardSedotSchedule,
-  ModalArmada,
-  NewOrder,
-} from 'components'
+import { AnimatedDiv, CardSedotSchedule, NewOrder } from 'components'
 import { useNavigate } from 'react-router-dom'
 import { useGet, usePost } from 'hooks/useRequest'
 import { API } from 'config/api'
@@ -15,7 +10,7 @@ import { useGlobalContext } from 'hooks/context'
 import { LocalStorage } from 'utils'
 import { StorageKey } from 'config/storage'
 import { handleEmoji } from 'hooks/handleEmoji'
-import { notifyManager, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { getData } from 'hooks/useFetch'
 
 export const Home: React.FC = () => {
@@ -24,8 +19,6 @@ export const Home: React.FC = () => {
   const navigate = useNavigate()
   const [dataGetSummaryHome, getSummaryHome] = useGet({ isLoading: false })
   const [dataAcceptOrder, postAcceptOrder] = usePost({ isLoading: false })
-  const [selectedID, setSelectedID] = useState<number>()
-  const [openModalArmada, setOpenModalArmada] = useState<boolean>(false)
   const [dataConfirmedOrder, getConfirmedOrder] = useGet({ isLoading: false })
   const [dataGetNewOrder, getNewOrder] = useGet({ isLoading: false })
   const [dataReviews, getReviews] = useGet({ isLoading: false })
@@ -314,8 +307,21 @@ export const Home: React.FC = () => {
                 isLoading={dataAcceptOrder.isLoading}
                 onCancelOrder={() => console.log('order canceled')}
                 onAcceptOrder={() => {
-                  setSelectedID(item.id_transaction)
-                  setOpenModalArmada(true)
+                  openAlert({
+                    // images: item.url_accommodation,
+                    title: `Konfirmasi Terima Transaksi`,
+                    messages: `Terima transaksi ini?`,
+                    isConfirm: true,
+                    btnConfirmText: 'Ya',
+                    btnCloseText: 'Tidak',
+                    callback: (e: any) => {
+                      if (e.isConfirm) {
+                        postAcceptOrder.getRequest(API.NEW_ORDER_CONFIRM, {
+                          id_transaction: item.id_transaction,
+                        })
+                      }
+                    },
+                  })
                 }}
                 onAcceptOrderKontraktor={() =>
                   navigate(`/detail-kontruksi-order/${item.id_transaction}`)
@@ -360,17 +366,16 @@ export const Home: React.FC = () => {
         </div>
       </AnimatedDiv>
 
-      <ModalArmada
+      {/* <ModalArmada
         onHide={() => setOpenModalArmada(false)}
         isOpen={openModalArmada}
         onClick={(e) => {
           setOpenModalArmada(false)
           postAcceptOrder.getRequest(API.NEW_ORDER_CONFIRM, {
-            id_accommodation: e,
             id_transaction: selectedID,
           })
         }}
-      />
+      /> */}
 
       <div className='safe-bottom flex justify-end items-center fixed bottom-20 pr-4 w-full max-w-content bg-transparent z-50 -ml-4'>
         <div

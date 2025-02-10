@@ -1,10 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  AnimatedDiv,
-  CardSedotSchedule,
-  ModalArmada,
-  NewOrder,
-} from 'components'
+import { AnimatedDiv, CardSedotSchedule, NewOrder } from 'components'
 import { API } from 'config/api'
 import { useGlobalContext } from 'hooks/context'
 import { useGet, usePost } from 'hooks/useRequest'
@@ -18,8 +13,6 @@ export const Order: React.FC = () => {
   const [dataGetNewOrder, getNewOrder] = useGet({ isLoading: false })
   const [dataAcceptOrder, postAcceptOrder] = usePost({ isLoading: false })
   const [dataHistoryOrder, postHistoryOrder] = usePost({ isLoading: false })
-  const [selectedID, setSelectedID] = useState<number>()
-  const [openModalArmada, setOpenModalArmada] = useState<boolean>(false)
   const [dataNewOrder, setDataNewOrder] = useState<any>([])
 
   useEffect(() => {
@@ -101,8 +94,21 @@ export const Order: React.FC = () => {
                 isLoading={dataAcceptOrder.isLoading}
                 onCancelOrder={() => console.log('order canceled')}
                 onAcceptOrder={() => {
-                  setSelectedID(item.id_transaction)
-                  setOpenModalArmada(true)
+                  openAlert({
+                    // images: item.url_accommodation,
+                    title: `Konfirmasi Terima Transaksi`,
+                    messages: `Terima transaksi ini?`,
+                    isConfirm: true,
+                    btnConfirmText: 'Ya',
+                    btnCloseText: 'Tidak',
+                    callback: (e: any) => {
+                      if (e.isConfirm) {
+                        postAcceptOrder.getRequest(API.NEW_ORDER_CONFIRM, {
+                          id_transaction: item.id_transaction,
+                        })
+                      }
+                    },
+                  })
                 }}
                 onAcceptOrderKontraktor={() =>
                   navigate(`/detail-kontruksi-order/${item.id_transaction}`)
@@ -132,17 +138,6 @@ export const Order: React.FC = () => {
           />
         ))}
       </AnimatedDiv>
-      <ModalArmada
-        onHide={() => setOpenModalArmada(false)}
-        isOpen={openModalArmada}
-        onClick={(e) => {
-          setOpenModalArmada(false)
-          postAcceptOrder.getRequest(API.NEW_ORDER_CONFIRM, {
-            id_accommodation: e,
-            id_transaction: selectedID,
-          })
-        }}
-      />
     </div>
   )
 }

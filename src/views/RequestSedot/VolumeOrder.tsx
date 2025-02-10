@@ -151,7 +151,7 @@ export const VolumeOrder: React.FC = () => {
           }}
         />
         <div className='bg-neutral-20 text-white font-semi-bold px-2 pl-3 py-3 rounded-e-md'>
-          L
+          M<sup>3</sup>
         </div>
       </div>
 

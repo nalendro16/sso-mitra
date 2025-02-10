@@ -1,7 +1,7 @@
 import { BackgroundGeolocationPlugin } from '@capacitor-community/background-geolocation'
 import images from 'assets/images'
 import { useState, useEffect } from 'react'
-import { AnimatedDiv, Header, StepItem } from 'components'
+import { AnimatedDiv, Header, ModalArmada, StepItem } from 'components'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useGet, usePost } from 'hooks/useRequest'
 import { API } from 'config/api'
@@ -25,10 +25,10 @@ export const TrackOrder: React.FC = () => {
     lat: 0,
     long: 0,
   })
+  const [openModalArmada, setOpenModalArmada] = useState<boolean>(false)
   const [dataTracking, setDataTracking] = useState<any>([])
   const [dataOrderDetail, setDataOrderDetail] = useState<any>()
   const [dataGetTracking, getTrackingData] = useGet({ isLoading: false })
-  const [dataTrackingFinish, getTrackingFinish] = usePost({ isLoading: false }) //finish sedot
   const [dataPostAcceptOrder, postAcceptOrder] = usePost({ isLoading: false })
   const [dataStartSedot, postStartSedot] = usePost({ isLoading: false })
   const [startRenov, postStartRenov] = usePost({ isLoading: false })
@@ -92,26 +92,6 @@ export const TrackOrder: React.FC = () => {
   }, [dataGetTracking])
 
   useEffect(() => {
-    const { data } = dataTrackingFinish
-    if (data?.status === 'success') {
-      openAlert({
-        messages: data?.messages || 'Pesanan sudah terselesaikan',
-        showBtnClose: false,
-        isConfirm: true,
-      })
-      storage.remove(StorageKey.ID_TRANSACTION)
-      BackgroundGeolocation.removeWatcher({ id: watcherID })
-      setWatcherID('')
-      getTrackingData.getRequest(API.TRACKING_SEDOT_DETAIL + id)
-    } else if (data?.status === 'fail') {
-      openAlert({
-        messages: data?.messages,
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataTrackingFinish])
-
-  useEffect(() => {
     const { data } = startRenov
     if (data?.status === 'success') {
       openAlert({
@@ -153,10 +133,10 @@ export const TrackOrder: React.FC = () => {
       case 3:
         return handleStartTracking()
       case 4:
-        // return handleStartWork()
         return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
           ? handleStartTrackingMitra()
-          : handleStartWork()
+          : setOpenModalArmada(true)
+
       case 5:
         return storage.getItem(StorageKey?.LEVEL) === 'Kontraktor'
           ? navigate(
@@ -179,22 +159,6 @@ export const TrackOrder: React.FC = () => {
         return void 0
     }
   }
-
-  // const handleLastStep = () => {
-  //   openAlert({
-  //     messages: 'Apakah seluruh pekerjaan sudah selesai?',
-  //     isConfirm: true,
-  //     btnConfirmText: 'Ya',
-  //     btnCloseText: 'Tidak',
-  //     callback: (e: any) => {
-  //       if (e.isConfirm) {
-  //         getTrackingFinish.getRequest(API.TRACKING_FINISH_SEDOT, {
-  //           id_transaction: dataOrderDetail?.id_transaction,
-  //         })
-  //       }
-  //     },
-  //   })
-  // }
 
   const handleFinishWork = () => {
     openAlert({
@@ -225,11 +189,12 @@ export const TrackOrder: React.FC = () => {
             postStartRenov.getRequest(API.START_RENOV, {
               id_transaction: dataOrderDetail?.id_transaction,
             })
-          } else {
-            postStartSedot.getRequest(API.START_SEDOT, {
-              id_transaction: dataOrderDetail?.id_transaction,
-            })
           }
+          // else {
+          // postStartSedot.getRequest(API.START_SEDOT, {
+          //   id_transaction: dataOrderDetail?.id_transaction,
+          // })
+          // }
         }
       },
     })
@@ -425,6 +390,18 @@ export const TrackOrder: React.FC = () => {
           ))}
         </div>
       </AnimatedDiv>
+
+      <ModalArmada
+        onHide={() => setOpenModalArmada(false)}
+        isOpen={openModalArmada}
+        onClick={(e) => {
+          setOpenModalArmada(false)
+          postStartSedot.getRequest(API.START_SEDOT, {
+            id_transaction: dataOrderDetail?.id_transaction,
+            id_accommodation: e,
+          })
+        }}
+      />
     </div>
   )
 }

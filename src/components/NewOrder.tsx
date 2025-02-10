@@ -184,7 +184,7 @@ export const NewOrder: React.FC<NewOrderProps> = ({
           <Button
             className='btn-primary w-full basis-1/2'
             onClick={onAcceptOrder}
-            label='Terima'
+            label='Terima Order'
             isLoading={isLoading}
           />
         </div>
