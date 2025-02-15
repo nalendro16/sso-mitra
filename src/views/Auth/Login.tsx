@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import images from 'assets/images'
 import React, { useEffect, useState } from 'react'
-import { Button, Input } from 'components'
+import { Button } from 'components'
 import { useNavigate } from 'react-router-dom'
 import { useGet, usePost } from 'hooks/useRequest'
 import { API } from 'config/api'
@@ -95,16 +94,10 @@ export const Login: React.FC = () => {
   return (
     <div className='content-full flex flex-col'>
       <div
-        className={`bg-no-repeat bg-cover bg-center bg-neutral-10 max-h-52 z-20 h-2/3 pb-2 top-0 left-0 w-full bg-[url('/src/assets/images/ic_banner_order.png')] px-4`}
-      >
-        <img
-          src={images.ic_unicef_blue}
-          alt=''
-          className='h-auto mt-10 mx-auto'
-        />
-      </div>
+        className={`bg-no-repeat bg-cover bg-center bg-ye max-h-52 z-20 h-2/3 pb-2 top-0 left-0 w-full bg-[url('/src/assets/images/icon_mitra_gedang_mitra_jpeg.png')] px-4`}
+      />
 
-      <div className='bg-white rounded-t-3xl z-10 px-8 w-full max-w-content top-shadow'>
+      <div className='bg-white rounded-t-3xl z-10 px-8 w-full max-w-content top-shadow -mt-4'>
         <div className='font-bold text-2xl mb-4 mt-8 text-primary-darker'>{`Selamat Datang 👋`}</div>
         <div className='text-neutral-40 text-sm mb-8'>
           {'Masukkan nomor handphone kamu untuk melanjutkan'}

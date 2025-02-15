@@ -96,6 +96,8 @@ import ic_armada_capacity from './ic_armada_capacity.png'
 import ic_armada_plat from './ic_armada_plat.png'
 import ic_dumping from './ic_dumping.png'
 import ic_whatsapp from './ic_whatsapp.svg'
+import splash from './splash.png'
+import icon_mitra_gedang_mitra_jpeg from './icon_mitra_gedang_mitra_jpeg.png'
 
 const images = {
   ic_user,
@@ -196,6 +198,8 @@ const images = {
   ic_armada_plat,
   ic_dumping,
   ic_whatsapp,
+  splash,
+  icon_mitra_gedang_mitra_jpeg,
 }
 
 export default images
